@@ -31,55 +31,69 @@ NSArray *ScriptSteps()
 {
 	NSMutableArray *steps = [NSMutableArray array];
     
-    
-    // Dialog to name project
-    [steps addObject:[PromptStep promptStepWithTitle:@"Project Name"
-                                        initialValue:@""
-                                      outputStateKey:kIKUProjectName]];
-	
 	//
 	// Present an open dialog to select an xcodeproj file
 	//
 	[steps addObject:
-		[PathSelectionStep
-			pathSelectionStepWithTitle:@"Select Xcode project file"
-			outputStateKey:@"xcodeProjectPath"
-			allowedFileTypes:[NSArray arrayWithObject:@"xcodeproj"]
-			allowDirectories:NO
-			errorIfCancelled:YES]];
-	
-	//
-	// Get the path of the directory that contains the xcodeproj file
-	//
-	[steps addObject:
-		[TaskStep taskStepWithCommandLine:
-			@"/usr/bin/dirname",
-			[ScriptValue scriptValueWithKey:@"xcodeProjectPath"],
-		nil]];
-	[[steps lastObject] setTrimNewlines:YES];
-	[[steps lastObject] setOutputStateKey:@"xcodeDirectory"];
+     [PathSelectionStep
+      pathSelectionStepWithTitle:@"Select project parent directory"
+      outputStateKey:kIKUProjectPath
+      allowedFileTypes:nil//[NSArray arrayWithObject:@"xcodeproj"]
+      allowDirectories:YES
+      errorIfCancelled:YES]];
 
-	//
-	// Get the project name minus filename extension
-	//
-	// NOTE: we presume a few things related to this name.
-	//
-	// 1) The default target in the project has the same name as the project
-	// 2) The Info.plist is named <projectname>-Info.plist
-	// 3) The application built by the project is named <projectname>.app
-	//
-	// These points are true of the Cocoa Application Template I used for this
-	// project but your mileage may vary.
-	//
-	[steps addObject:
-		[TaskStep taskStepWithCommandLine:
-			@"/usr/bin/basename",
-			@"-s",
-			@".xcodeproj",
-			[ScriptValue scriptValueWithKey:@"xcodeProjectPath"],
-		nil]];
-	[[steps lastObject] setTrimNewlines:YES];
-	[[steps lastObject] setOutputStateKey:@"xcodeProjectName"];
+    //
+    // Dialog to name project
+    //
+    [steps addObject:[PromptStep promptStepWithTitle:@"Project Name"
+                                        initialValue:@""
+                                      outputStateKey:kIKUProjectName]];
+	
+    //
+    // Make a new directory with the project name at the given path
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/mkdir",
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      nil]];
+    
+    [[steps lastObject] setCurrentDirectory:
+     [ScriptValue scriptValueWithKey:@"kIKUProjectPath"]];
+
+
+//    //
+//	// Get the path of the directory that contains the xcodeproj file
+//	//
+//	[steps addObject:
+//		[TaskStep taskStepWithCommandLine:
+//			@"/usr/bin/dirname",
+//			[ScriptValue scriptValueWithKey:kIKUProjectPath], 
+//         nil]];
+//	[[steps lastObject] setTrimNewlines:YES];
+//	[[steps lastObject] setOutputStateKey:@"xcodeDirectory"];
+//
+//	//
+//	// Get the project name minus filename extension
+//	//
+//	// NOTE: we presume a few things related to this name.
+//	//
+//	// 1) The default target in the project has the same name as the project
+//	// 2) The Info.plist is named <projectname>-Info.plist
+//	// 3) The application built by the project is named <projectname>.app
+//	//
+//	// These points are true of the Cocoa Application Template I used for this
+//	// project but your mileage may vary.
+//	//
+//	[steps addObject:
+//		[TaskStep taskStepWithCommandLine:
+//			@"/usr/bin/basename",
+//			@"-s",
+//			@".xcodeproj",
+//			[ScriptValue scriptValueWithKey:@"xcodeProjectPath"],
+//		nil]];
+//	[[steps lastObject] setTrimNewlines:YES];
+//	[[steps lastObject] setOutputStateKey:@"xcodeProjectName"];
 	
 	//
 	// Check if git is installed at /usr/bin/git
