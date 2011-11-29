@@ -1,0 +1,449 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
+		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		C927E02612826AF00070E224 /* UniqueTemporaryDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = C927E010128265080070E224 /* UniqueTemporaryDirectory.m */; };
+		C927E060128271630070E224 /* RegexConditionalStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C927E05F128271630070E224 /* RegexConditionalStep.m */; };
+		C927E52B128365430070E224 /* ConditionalStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C927E52A128365430070E224 /* ConditionalStep.m */; };
+		C935958C12812EFD00239E0B /* CocoaScriptAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C935958912812EFD00239E0B /* CocoaScriptAppDelegate.m */; };
+		C935958D12812EFD00239E0B /* CocoaScriptWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C935958B12812EFD00239E0B /* CocoaScriptWindowController.m */; };
+		C935959612812F0D00239E0B /* PathSelectionStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C935958F12812F0D00239E0B /* PathSelectionStep.m */; };
+		C935959712812F0D00239E0B /* ScriptQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = C935959112812F0D00239E0B /* ScriptQueue.m */; };
+		C935959812812F0D00239E0B /* ScriptStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C935959312812F0D00239E0B /* ScriptStep.m */; };
+		C935959912812F0D00239E0B /* TaskStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C935959512812F0D00239E0B /* TaskStep.m */; };
+		C93595A712812F1B00239E0B /* ScriptStepCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C93595A412812F1B00239E0B /* ScriptStepCollectionViewItem.m */; };
+		C93595A812812F1B00239E0B /* ScriptStepView.m in Sources */ = {isa = PBXBuildFile; fileRef = C93595A612812F1B00239E0B /* ScriptStepView.m */; };
+		C93595B412812F3700239E0B /* PrioritySplitViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C93595B112812F3700239E0B /* PrioritySplitViewDelegate.m */; };
+		C93595B512812F3700239E0B /* TaskHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C93595B312812F3700239E0B /* TaskHandler.m */; };
+		C935969D128152F500239E0B /* CocoaScript.icns in Resources */ = {isa = PBXBuildFile; fileRef = C935969C128152F500239E0B /* CocoaScript.icns */; };
+		C93B98E8128D1C47009477C1 /* ConcatenateStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C93B98E7128D1C47009477C1 /* ConcatenateStep.m */; };
+		C94B21CA127F934000A7A9A5 /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = C94B21C8127F934000A7A9A5 /* checkmark.png */; };
+		C94B21CB127F934000A7A9A5 /* cross.png in Resources */ = {isa = PBXBuildFile; fileRef = C94B21C9127F934000A7A9A5 /* cross.png */; };
+		C94B2D0B127FF04100A7A9A5 /* warn.png in Resources */ = {isa = PBXBuildFile; fileRef = C94B2D0A127FF04100A7A9A5 /* warn.png */; };
+		C964AE131280E56D000A9A83 /* Script.m in Sources */ = {isa = PBXBuildFile; fileRef = C964AE121280E56D000A9A83 /* Script.m */; };
+		C9A5F741113204F100FDF715 /* CocoaScriptWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9A5F73F113204F100FDF715 /* CocoaScriptWindow.xib */; };
+		C9CA7B3C12817E8D00C14F2B /* VersionStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C9CA7B3B12817E8D00C14F2B /* VersionStep.m */; };
+		C9CA7B4112817ECC00C14F2B /* PromptStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C9CA7B4012817ECC00C14F2B /* PromptStep.m */; };
+		C9F2551E12823A7000420BE9 /* BlockStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F2551D12823A7000420BE9 /* BlockStep.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		256AC3F00F4B6AF500CF3369 /* CocoaScript_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaScript_Prefix.pch; sourceTree = "<group>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		8D1107310486CEB800E47090 /* CocoaScript-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CocoaScript-Info.plist"; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* CocoaScript.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CocoaScript.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C927E00F128265080070E224 /* UniqueTemporaryDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniqueTemporaryDirectory.h; sourceTree = "<group>"; };
+		C927E010128265080070E224 /* UniqueTemporaryDirectory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UniqueTemporaryDirectory.m; sourceTree = "<group>"; };
+		C927E05E128271630070E224 /* RegexConditionalStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexConditionalStep.h; sourceTree = "<group>"; };
+		C927E05F128271630070E224 /* RegexConditionalStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexConditionalStep.m; sourceTree = "<group>"; };
+		C927E529128365430070E224 /* ConditionalStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConditionalStep.h; sourceTree = "<group>"; };
+		C927E52A128365430070E224 /* ConditionalStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConditionalStep.m; sourceTree = "<group>"; };
+		C935958812812EFD00239E0B /* CocoaScriptAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaScriptAppDelegate.h; sourceTree = "<group>"; };
+		C935958912812EFD00239E0B /* CocoaScriptAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaScriptAppDelegate.m; sourceTree = "<group>"; };
+		C935958A12812EFD00239E0B /* CocoaScriptWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaScriptWindowController.h; sourceTree = "<group>"; };
+		C935958B12812EFD00239E0B /* CocoaScriptWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaScriptWindowController.m; sourceTree = "<group>"; };
+		C935958E12812F0D00239E0B /* PathSelectionStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathSelectionStep.h; sourceTree = "<group>"; };
+		C935958F12812F0D00239E0B /* PathSelectionStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PathSelectionStep.m; sourceTree = "<group>"; };
+		C935959012812F0D00239E0B /* ScriptQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptQueue.h; sourceTree = "<group>"; };
+		C935959112812F0D00239E0B /* ScriptQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptQueue.m; sourceTree = "<group>"; };
+		C935959212812F0D00239E0B /* ScriptStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptStep.h; sourceTree = "<group>"; };
+		C935959312812F0D00239E0B /* ScriptStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptStep.m; sourceTree = "<group>"; };
+		C935959412812F0D00239E0B /* TaskStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskStep.h; sourceTree = "<group>"; };
+		C935959512812F0D00239E0B /* TaskStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskStep.m; sourceTree = "<group>"; };
+		C93595A312812F1B00239E0B /* ScriptStepCollectionViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptStepCollectionViewItem.h; sourceTree = "<group>"; };
+		C93595A412812F1B00239E0B /* ScriptStepCollectionViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptStepCollectionViewItem.m; sourceTree = "<group>"; };
+		C93595A512812F1B00239E0B /* ScriptStepView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptStepView.h; sourceTree = "<group>"; };
+		C93595A612812F1B00239E0B /* ScriptStepView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScriptStepView.m; sourceTree = "<group>"; };
+		C93595B012812F3700239E0B /* PrioritySplitViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrioritySplitViewDelegate.h; sourceTree = "<group>"; };
+		C93595B112812F3700239E0B /* PrioritySplitViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrioritySplitViewDelegate.m; sourceTree = "<group>"; };
+		C93595B212812F3700239E0B /* TaskHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaskHandler.h; sourceTree = "<group>"; };
+		C93595B312812F3700239E0B /* TaskHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaskHandler.m; sourceTree = "<group>"; };
+		C935969C128152F500239E0B /* CocoaScript.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = CocoaScript.icns; sourceTree = "<group>"; };
+		C93B98E6128D1C47009477C1 /* ConcatenateStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConcatenateStep.h; sourceTree = "<group>"; };
+		C93B98E7128D1C47009477C1 /* ConcatenateStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConcatenateStep.m; sourceTree = "<group>"; };
+		C94B21C8127F934000A7A9A5 /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkmark.png; sourceTree = "<group>"; };
+		C94B21C9127F934000A7A9A5 /* cross.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cross.png; sourceTree = "<group>"; };
+		C94B2D0A127FF04100A7A9A5 /* warn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = warn.png; sourceTree = "<group>"; };
+		C964AE121280E56D000A9A83 /* Script.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Script.m; sourceTree = "<group>"; };
+		C9A5F740113204F100FDF715 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/CocoaScriptWindow.xib; sourceTree = "<group>"; };
+		C9CA7B3A12817E8D00C14F2B /* VersionStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VersionStep.h; sourceTree = "<group>"; };
+		C9CA7B3B12817E8D00C14F2B /* VersionStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VersionStep.m; sourceTree = "<group>"; };
+		C9CA7B3F12817ECC00C14F2B /* PromptStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PromptStep.h; sourceTree = "<group>"; };
+		C9CA7B4012817ECC00C14F2B /* PromptStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PromptStep.m; sourceTree = "<group>"; };
+		C9F2551C12823A7000420BE9 /* BlockStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlockStep.h; sourceTree = "<group>"; };
+		C9F2551D12823A7000420BE9 /* BlockStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockStep.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				C93B99B2128D4257009477C1 /* Controllers */,
+				C9FE6D6A127EA7DA00E969AC /* Views */,
+				C9FE6D68127EA7A800E969AC /* ScriptSteps */,
+				C9FE6D69127EA7C800E969AC /* Utility Classes */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* CocoaScript.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* CocoaScript */ = {
+			isa = PBXGroup;
+			children = (
+				C964AE121280E56D000A9A83 /* Script.m */,
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = CocoaScript;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				256AC3F00F4B6AF500CF3369 /* CocoaScript_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C935969C128152F500239E0B /* CocoaScript.icns */,
+				C94B2D0A127FF04100A7A9A5 /* warn.png */,
+				C94B21C8127F934000A7A9A5 /* checkmark.png */,
+				C94B21C9127F934000A7A9A5 /* cross.png */,
+				8D1107310486CEB800E47090 /* CocoaScript-Info.plist */,
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
+				C9A5F73F113204F100FDF715 /* CocoaScriptWindow.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C93B99B2128D4257009477C1 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				C935958812812EFD00239E0B /* CocoaScriptAppDelegate.h */,
+				C935958912812EFD00239E0B /* CocoaScriptAppDelegate.m */,
+				C935958A12812EFD00239E0B /* CocoaScriptWindowController.h */,
+				C935958B12812EFD00239E0B /* CocoaScriptWindowController.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		C9FE6D68127EA7A800E969AC /* ScriptSteps */ = {
+			isa = PBXGroup;
+			children = (
+				C935959012812F0D00239E0B /* ScriptQueue.h */,
+				C935959112812F0D00239E0B /* ScriptQueue.m */,
+				C935959212812F0D00239E0B /* ScriptStep.h */,
+				C935959312812F0D00239E0B /* ScriptStep.m */,
+				C935959412812F0D00239E0B /* TaskStep.h */,
+				C935959512812F0D00239E0B /* TaskStep.m */,
+				C9CA7B3F12817ECC00C14F2B /* PromptStep.h */,
+				C9CA7B4012817ECC00C14F2B /* PromptStep.m */,
+				C9F2551C12823A7000420BE9 /* BlockStep.h */,
+				C9F2551D12823A7000420BE9 /* BlockStep.m */,
+				C935958E12812F0D00239E0B /* PathSelectionStep.h */,
+				C935958F12812F0D00239E0B /* PathSelectionStep.m */,
+				C93B98E6128D1C47009477C1 /* ConcatenateStep.h */,
+				C93B98E7128D1C47009477C1 /* ConcatenateStep.m */,
+				C9CA7B3A12817E8D00C14F2B /* VersionStep.h */,
+				C9CA7B3B12817E8D00C14F2B /* VersionStep.m */,
+				C927E529128365430070E224 /* ConditionalStep.h */,
+				C927E52A128365430070E224 /* ConditionalStep.m */,
+				C927E05E128271630070E224 /* RegexConditionalStep.h */,
+				C927E05F128271630070E224 /* RegexConditionalStep.m */,
+			);
+			name = ScriptSteps;
+			sourceTree = "<group>";
+		};
+		C9FE6D69127EA7C800E969AC /* Utility Classes */ = {
+			isa = PBXGroup;
+			children = (
+				C93595B012812F3700239E0B /* PrioritySplitViewDelegate.h */,
+				C93595B112812F3700239E0B /* PrioritySplitViewDelegate.m */,
+				C93595B212812F3700239E0B /* TaskHandler.h */,
+				C93595B312812F3700239E0B /* TaskHandler.m */,
+				C927E00F128265080070E224 /* UniqueTemporaryDirectory.h */,
+				C927E010128265080070E224 /* UniqueTemporaryDirectory.m */,
+			);
+			name = "Utility Classes";
+			sourceTree = "<group>";
+		};
+		C9FE6D6A127EA7DA00E969AC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C93595A312812F1B00239E0B /* ScriptStepCollectionViewItem.h */,
+				C93595A412812F1B00239E0B /* ScriptStepCollectionViewItem.m */,
+				C93595A512812F1B00239E0B /* ScriptStepView.h */,
+				C93595A612812F1B00239E0B /* ScriptStepView.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* CocoaScript */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "CocoaScript" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CocoaScript;
+			productInstallPath = "$(HOME)/Applications";
+			productName = CocoaScript;
+			productReference = 8D1107320486CEB800E47090 /* CocoaScript.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CocoaScript" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* CocoaScript */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8D1107260486CEB800E47090 /* CocoaScript */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
+				C9A5F741113204F100FDF715 /* CocoaScriptWindow.xib in Resources */,
+				C94B21CA127F934000A7A9A5 /* checkmark.png in Resources */,
+				C94B21CB127F934000A7A9A5 /* cross.png in Resources */,
+				C94B2D0B127FF04100A7A9A5 /* warn.png in Resources */,
+				C935969D128152F500239E0B /* CocoaScript.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				C964AE131280E56D000A9A83 /* Script.m in Sources */,
+				C935958C12812EFD00239E0B /* CocoaScriptAppDelegate.m in Sources */,
+				C935958D12812EFD00239E0B /* CocoaScriptWindowController.m in Sources */,
+				C935959612812F0D00239E0B /* PathSelectionStep.m in Sources */,
+				C935959712812F0D00239E0B /* ScriptQueue.m in Sources */,
+				C935959812812F0D00239E0B /* ScriptStep.m in Sources */,
+				C935959912812F0D00239E0B /* TaskStep.m in Sources */,
+				C93595A712812F1B00239E0B /* ScriptStepCollectionViewItem.m in Sources */,
+				C93595A812812F1B00239E0B /* ScriptStepView.m in Sources */,
+				C93595B412812F3700239E0B /* PrioritySplitViewDelegate.m in Sources */,
+				C93595B512812F3700239E0B /* TaskHandler.m in Sources */,
+				C9CA7B3C12817E8D00C14F2B /* VersionStep.m in Sources */,
+				C9CA7B4112817ECC00C14F2B /* PromptStep.m in Sources */,
+				C9F2551E12823A7000420BE9 /* BlockStep.m in Sources */,
+				C927E02612826AF00070E224 /* UniqueTemporaryDirectory.m in Sources */,
+				C927E060128271630070E224 /* RegexConditionalStep.m in Sources */,
+				C927E52B128365430070E224 /* ConditionalStep.m in Sources */,
+				C93B98E8128D1C47009477C1 /* ConcatenateStep.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C165DFE840E0CC02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1DDD58140DA1D0A300B32029 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1DDD58150DA1D0A300B32029 /* English */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		C9A5F73F113204F100FDF715 /* CocoaScriptWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C9A5F740113204F100FDF715 /* English */,
+			);
+			name = CocoaScriptWindow.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C01FCF4B08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = CocoaScript_Prefix.pch;
+				INFOPLIST_FILE = "CocoaScript-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = CocoaScript;
+			};
+			name = Debug;
+		};
+		C01FCF4C08A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = CocoaScript_Prefix.pch;
+				INFOPLIST_FILE = "CocoaScript-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = CocoaScript;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "CocoaScript" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Debug */,
+				C01FCF4C08A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CocoaScript" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}
