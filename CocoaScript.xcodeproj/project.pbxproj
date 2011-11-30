@@ -11,6 +11,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		A64C83EA1486970E00B294A0 /* NSTimer+PSYBlockTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = A64C83E91486970E00B294A0 /* NSTimer+PSYBlockTimer.m */; };
 		C927E02612826AF00070E224 /* UniqueTemporaryDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = C927E010128265080070E224 /* UniqueTemporaryDirectory.m */; };
 		C927E060128271630070E224 /* RegexConditionalStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C927E05F128271630070E224 /* RegexConditionalStep.m */; };
 		C927E52B128365430070E224 /* ConditionalStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C927E52A128365430070E224 /* ConditionalStep.m */; };
@@ -47,6 +48,8 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* CocoaScript-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CocoaScript-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* CocoaScript.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CocoaScript.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A64C83E81486970D00B294A0 /* NSTimer+PSYBlockTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+PSYBlockTimer.h"; sourceTree = "<group>"; };
+		A64C83E91486970E00B294A0 /* NSTimer+PSYBlockTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+PSYBlockTimer.m"; sourceTree = "<group>"; };
 		C927E00F128265080070E224 /* UniqueTemporaryDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniqueTemporaryDirectory.h; sourceTree = "<group>"; };
 		C927E010128265080070E224 /* UniqueTemporaryDirectory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UniqueTemporaryDirectory.m; sourceTree = "<group>"; };
 		C927E05E128271630070E224 /* RegexConditionalStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexConditionalStep.h; sourceTree = "<group>"; };
@@ -231,6 +234,8 @@
 				C93595B312812F3700239E0B /* TaskHandler.m */,
 				C927E00F128265080070E224 /* UniqueTemporaryDirectory.h */,
 				C927E010128265080070E224 /* UniqueTemporaryDirectory.m */,
+				A64C83E81486970D00B294A0 /* NSTimer+PSYBlockTimer.h */,
+				A64C83E91486970E00B294A0 /* NSTimer+PSYBlockTimer.m */,
 			);
 			name = "Utility Classes";
 			sourceTree = "<group>";
@@ -332,6 +337,7 @@
 				C927E060128271630070E224 /* RegexConditionalStep.m in Sources */,
 				C927E52B128365430070E224 /* ConditionalStep.m in Sources */,
 				C93B98E8128D1C47009477C1 /* ConcatenateStep.m in Sources */,
+				A64C83EA1486970E00B294A0 /* NSTimer+PSYBlockTimer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

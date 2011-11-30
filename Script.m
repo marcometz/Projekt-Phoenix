@@ -21,6 +21,8 @@
 #import "UniqueTemporaryDirectory.h"
 #import "RegexConditionalStep.h"
 #import "ConcatenateStep.h"
+#import "NSTimer+PSYBlockTimer.h"
+
 
 //
 // ScriptSteps
@@ -30,36 +32,215 @@
 NSArray *ScriptSteps()
 {
 	NSMutableArray *steps = [NSMutableArray array];
-    
-	//
-	// Present an open dialog to select an xcodeproj file
-	//
-	[steps addObject:
-     [PathSelectionStep
-      pathSelectionStepWithTitle:@"Select project parent directory"
-      outputStateKey:kIKUProjectPath
-      allowedFileTypes:nil//[NSArray arrayWithObject:@"xcodeproj"]
-      allowDirectories:YES
-      errorIfCancelled:YES]];
-
+  
     //
     // Dialog to name project
     //
     [steps addObject:[PromptStep promptStepWithTitle:@"Project Name"
                                         initialValue:@""
                                       outputStateKey:kIKUProjectName]];
-	
+    [[steps lastObject] setTitle:@"Set a project name"];
+
+
     //
-    // Make a new directory with the project name at the given path
+	// Check if git is installed at /usr/bin/git
+	//
+	ConditionalStep *gitExists =
+    [ConditionalStep conditionalStepWithBlock:^(ConditionalStep *step){
+        BOOL isDirectory;
+        if ([[NSFileManager defaultManager]
+             fileExistsAtPath:@"/usr/bin/git"
+             isDirectory:&isDirectory] && !isDirectory)
+        {
+            [step.currentQueue setStateValue:@"YES" forKey:@"gitExists"];
+            [step replaceOutputString:@"YES"];
+            return YES;
+        }
+        [step replaceOutputString:@"NO"];
+        return NO;
+    }];
+	[steps addObject:gitExists];
+	[[steps lastObject] setTitle:@"Check if git is installed"];
+
+    //
+    // Create an empty directory on the server
     //
     [steps addObject:
      [TaskStep taskStepWithCommandLine:
-      @"/bin/mkdir",
+      @"/usr/bin/ssh",
+      @"git@arion",
+      @"mkdir",
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      nil]];
+	[[steps lastObject] setTitle:@"Create empty project dir on server"];
+
+    //
+    // CD into the project directory on the server 
+    // and initialize an empty git repository
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"git@arion",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      @"&&",
+      @"git init --bare",
+      nil]];
+	[[steps lastObject] setTitle:@"Create bare git repo on server"];
+
+	//
+	// Present a dialog to select a local path for the project
+	//
+	[steps addObject:
+     [PathSelectionStep
+      pathSelectionStepWithTitle:@"Wo soll das Projekt lokal angelegt werden?"
+      outputStateKey:kIKUProjectPath
+      allowedFileTypes:nil
+      allowDirectories:YES
+      errorIfCancelled:YES]];
+    [[steps lastObject] setTitle:@"Ask for local path"];
+
+    //
+    // Create the path to the repository on the server
+    //
+    [steps addObject:
+     [ConcatenateStep
+      concatenateStepWithOutputKey:@"clonePath"
+      andStrings:
+      @"ssh://git@arion/home/git/",
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      nil]];
+	[[steps lastObject] setTitle:@"Create path to repository"];
+
+    //
+    // Clone the repository from the server to the local path
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/git",
+      @"clone",
+      [ScriptValue scriptValueWithKey:@"clonePath"],
+      nil]];
+    [gitExists addPredicatedStep:[steps lastObject]];
+
+    [[steps lastObject] setCurrentDirectory:
+     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
+	[[steps lastObject] setTitle:@"Clone repository from server"];
+
+    //
+    // Create a reusable scriptValue with the projects directory and path
+    //
+    [steps addObject:
+     [ConcatenateStep
+      concatenateStepWithOutputKey:kIKUProjectDirectory
+      andStrings:
+      [ScriptValue scriptValueWithKey:kIKUProjectPath],
+      @"/",
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      nil]];
+	[[steps lastObject] setTitle:@"Find project directory"];
+
+    //
+	// Check if rvm is installed at ~/.rvm
+	//
+	ConditionalStep *rvmExists =
+    [ConditionalStep conditionalStepWithBlock:^(ConditionalStep *step){
+        BOOL isDirectory;
+        if ([[NSFileManager defaultManager]
+             fileExistsAtPath:[@"~/.rvm" stringByExpandingTildeInPath]
+             isDirectory:&isDirectory] && isDirectory)
+        {
+            [step.currentQueue setStateValue:@"YES" forKey:@"rvmExists"];
+            [step replaceOutputString:@"YES"];
+            return YES;
+        }
+        [step replaceOutputString:@"NO"];
+        return NO;
+    }];
+	[steps addObject:rvmExists];
+	[[steps lastObject] setTitle:@"Check if rvm is installed"];
+    
+    //
+    // Use AppleScript to switch the ruby to 1.8.7 without changing the default ruby version
+    // Create a gemset with the project name
+    // install rails 3.x
+    //
+    [steps addObject:
+     [BlockStep blockStepWithBlock:^(BlockStep *step) {
+        [step.currentQueue setSuspended:YES];
+        NSAppleScript* applescript = [[[NSAppleScript alloc] initWithSource:
+                                       [NSString stringWithFormat:
+                                        @"tell application \"Terminal\"\n"
+                                        @"	do script \"rvm use 1.8.7\"\n"
+                                        @"	do script \"rvm gemset create %@\" in window 1\n"
+                                        @"	do script \"rvm gemset use %@\" in window 1\n"
+                                        @"  do script \"cd %@\" in window 1\n"
+                                        @"	do script \"gem install rails --no-rdoc --no-ri\" in window 1\n"
+                                        @"  do script \"bundle install\" in window 1\n"
+                                        @"  do script \"rails new . -d mysql\" in window 1\n"
+                                        @"  do script \"touch rails_installed\" in window 1\n"
+                                        @"end tell\n", [step.currentQueue stateValueForKey:kIKUProjectName], [step.currentQueue stateValueForKey:kIKUProjectName], [step.currentQueue stateValueForKey:kIKUProjectDirectory]]] autorelease];
+        NSDictionary *errorDict = nil;
+        [applescript executeAndReturnError:&errorDict];
+        if (errorDict)
+        {
+            [step replaceAndApplyErrorToErrorString:[errorDict description]];
+            return;
+        }
+        
+        while (![[NSFileManager defaultManager] isReadableFileAtPath:[NSString stringWithFormat:@"%@/rails_installed", [step.currentQueue stateValueForKey:kIKUProjectDirectory]]]) {
+            sleep(5);
+            NSLog(@"wir haben gewartet");
+        }
+        [step.currentQueue setSuspended:NO];
+    }]];
+
+	[[steps lastObject] setTitle:@"AppleScript: configure rvm gemset and install rails."];
+
+    //
+    // Create the input for the .rvmrc file
+    //
+    [steps addObject:
+     [ConcatenateStep
+      concatenateStepWithOutputKey:@"rvmrcValue"
+      andStrings:
+      @"rvm use 1.8.7@",
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      nil]];
+	[[steps lastObject] setTitle:@"Set .rvmrc value"];
+
+    //
+    // Set the right value into .rvmrc
+    //
+    [steps addObject:
+     [BlockStep blockStepWithBlock:^(BlockStep *step) {
+        [[NSFileManager defaultManager] createFileAtPath:[NSString stringWithFormat:@"%@", [step.currentQueue stateValueForKey:kIKUProjectDirectory]]
+                                                contents:[[NSString stringWithFormat:@"%@", [step.currentQueue stateValueForKey:@"rvmrcValue"]] dataUsingEncoding:NSUTF8StringEncoding] 
+                                              attributes:nil];
+        
+    }]];
+
+    
+#warning Cleanup im dev mode
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"git@arion",
+      @"rm -R",
       [ScriptValue scriptValueWithKey:kIKUProjectName],
       nil]];
     
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/rm",
+      @"-Rf",
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      nil]];
     [[steps lastObject] setCurrentDirectory:
-     [ScriptValue scriptValueWithKey:@"kIKUProjectPath"]];
+     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
+
+    
 
 
 //    //
@@ -95,25 +276,6 @@ NSArray *ScriptSteps()
 //	[[steps lastObject] setTrimNewlines:YES];
 //	[[steps lastObject] setOutputStateKey:@"xcodeProjectName"];
 	
-	//
-	// Check if git is installed at /usr/bin/git
-	//
-	ConditionalStep *gitExists =
-		[ConditionalStep conditionalStepWithBlock:^(ConditionalStep *step){
-			BOOL isDirectory;
-			if ([[NSFileManager defaultManager]
-				fileExistsAtPath:@"/usr/bin/git"
-				isDirectory:&isDirectory] && !isDirectory)
-			{
-				[step.currentQueue setStateValue:@"YES" forKey:@"gitExists"];
-				[step replaceOutputString:@"YES"];
-				return YES;
-			}
-			[step replaceOutputString:@"NO"];
-			return NO;
-		}];
-	[steps addObject:gitExists];
-	[[steps lastObject] setTitle:@"Check if git is installed"];
 	
 	//
 	// Check that the project is fully committed into git
@@ -124,7 +286,7 @@ NSArray *ScriptSteps()
 	// This step is "predicated" on whether git exists (i.e. only runs if the
 	// gitExists conditional returns YES)
 	//
-	[steps addObject:
+/*	[steps addObject:
 		[TaskStep taskStepWithCommandLine:
 			@"/usr/bin/git",
 			@"status",
@@ -584,6 +746,6 @@ NSArray *ScriptSteps()
 				blockingDependentsOfStep:nil];
 		}]];
 	[[steps lastObject] setTitle:@"Clean up the temp folder."];
-	
+*/	
 	return steps;
 }
