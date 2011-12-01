@@ -32,7 +32,7 @@
 NSArray *ScriptSteps()
 {
 	NSMutableArray *steps = [NSMutableArray array];
-  
+
     //
     // Dialog to name project
     //
@@ -88,6 +88,24 @@ NSArray *ScriptSteps()
       @"git init --bare",
       nil]];
 	[[steps lastObject] setTitle:@"Create bare git repo on server"];
+
+    //
+    // Create a gemset on the server 
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"ikusei@arion",
+      @"rvm",
+      @"use",
+      @"ree-1.8.7-2011.02",
+      @"&&",
+      @"rvm",
+      @"gemset",
+      @"create",
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      nil]];
+	[[steps lastObject] setTitle:@"Create rvm gemset on server"];
 
 	//
 	// Present a dialog to select a local path for the project
@@ -167,36 +185,91 @@ NSArray *ScriptSteps()
     // install rails 3.x
     //
     [steps addObject:
-     [BlockStep blockStepWithBlock:^(BlockStep *step) {
-        [step.currentQueue setSuspended:YES];
-        NSAppleScript* applescript = [[[NSAppleScript alloc] initWithSource:
-                                       [NSString stringWithFormat:
-                                        @"tell application \"Terminal\"\n"
-                                        @"	do script \"rvm use 1.8.7\"\n"
-                                        @"	do script \"rvm gemset create %@\" in window 1\n"
-                                        @"	do script \"rvm gemset use %@\" in window 1\n"
-                                        @"  do script \"cd %@\" in window 1\n"
-                                        @"	do script \"gem install rails --no-rdoc --no-ri\" in window 1\n"
-                                        @"  do script \"bundle install\" in window 1\n"
-                                        @"  do script \"rails new . -d mysql\" in window 1\n"
-                                        @"  do script \"touch rails_installed\" in window 1\n"
-                                        @"end tell\n", [step.currentQueue stateValueForKey:kIKUProjectName], [step.currentQueue stateValueForKey:kIKUProjectName], [step.currentQueue stateValueForKey:kIKUProjectDirectory]]] autorelease];
-        NSDictionary *errorDict = nil;
-        [applescript executeAndReturnError:&errorDict];
-        if (errorDict)
-        {
-            [step replaceAndApplyErrorToErrorString:[errorDict description]];
-            return;
-        }
-        
-        while (![[NSFileManager defaultManager] isReadableFileAtPath:[NSString stringWithFormat:@"%@/rails_installed", [step.currentQueue stateValueForKey:kIKUProjectDirectory]]]) {
-            sleep(5);
-            NSLog(@"wir haben gewartet");
-        }
-        [step.currentQueue setSuspended:NO];
-    }]];
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      @"rvm",
+      @"use",
+      @"1.8.7",
+      @"&&",
+      @"rvm",
+      @"gemset",
+      @"create",
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      @"&&",
+      @"rvm",
+      @"gemset",
+      @"use",
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      @"&&",
+      @"gem install rails --no-rdoc --no-ri",
+      @"&&",
+      @"bundle install",
+      @"&&",
+      @"rails new . -d mysql",
+      nil]];
+	[[steps lastObject] setTitle:@"Create rvm gemset on server"];
 
-	[[steps lastObject] setTitle:@"AppleScript: configure rvm gemset and install rails."];
+//    [steps addObject:
+//     [BlockStep blockStepWithBlock:^(BlockStep *step) {
+//        [step.currentQueue setSuspended:YES];
+//        NSAppleScript* applescript = [[[NSAppleScript alloc] initWithSource:
+//                                       [NSString stringWithFormat:
+//                                        @"tell application \"Terminal\"\n"
+//                                        @"	do script \"rvm use 1.8.7\"\n"
+//                                        @"	do script \"rvm gemset create %@\" in window 1\n"
+//                                        @"	do script \"rvm gemset use %@\" in window 1\n"
+//                                        @"  do script \"cd %@\" in window 1\n"
+//                                        @"	do script \"gem install rails --no-rdoc --no-ri\" in window 1\n"
+//                                        @"  do script \"bundle install\" in window 1\n"
+//                                        @"  do script \"rails new . -d mysql\" in window 1\n"
+//                                        @"  do script \"touch rails_installed\" in window 1\n"
+//                                        @"end tell\n", [step.currentQueue stateValueForKey:kIKUProjectName], [step.currentQueue stateValueForKey:kIKUProjectName], [step.currentQueue stateValueForKey:kIKUProjectDirectory]]] autorelease];
+//        NSDictionary *errorDict = nil;
+//        [applescript executeAndReturnError:&errorDict];
+//        if (errorDict)
+//        {
+//            [step replaceAndApplyErrorToErrorString:[errorDict description]];
+//            return;
+//        }
+//        
+//        while (![[NSFileManager defaultManager] isReadableFileAtPath:[NSString stringWithFormat:@"%@/rails_installed", [step.currentQueue stateValueForKey:kIKUProjectDirectory]]]) {
+//            sleep(5);
+//            NSLog(@"wir haben gewartet");
+//        }
+//        [step.currentQueue setSuspended:NO];
+//        NSError *error = nil;
+//        
+//        if (![NSFileManager.defaultManager removeItemAtPath:[NSString stringWithFormat:@"%@/rails_installed", [step.currentQueue stateValueForKey:kIKUProjectDirectory]] error:&error]) {
+//            DLog(@"Failed to remove file: %@", [error localizedDescription]);
+//            NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+//            if(detailedErrors != nil && [detailedErrors count] > 0) {
+//                for(NSError* detailedError in detailedErrors) {
+//                    DLog(@"DetailedError: %@", [detailedError userInfo]);
+//                }
+//            } else {
+//                DLog(@"%@", [error userInfo]);
+//            }
+//        } else {
+//            NSAppleScript* applescript = [[[NSAppleScript alloc] initWithSource:
+//                                           [NSString stringWithFormat:
+//                                            @"tell application \"Terminal\"\n"
+//                                            @"  close window 1\n"
+//                                            @"end tell\n"]] autorelease];
+//            NSDictionary *errorDict = nil;
+//            [applescript executeAndReturnError:&errorDict];
+//            if (errorDict)
+//            {
+//                [step replaceAndApplyErrorToErrorString:[errorDict description]];
+//                return;
+//            }
+//        }
+//    }]];
+//
+//	[[steps lastObject] setTitle:@"AppleScript: configure rvm gemset and install rails."];
 
     //
     // Create the input for the .rvmrc file
@@ -231,14 +304,14 @@ NSArray *ScriptSteps()
       [ScriptValue scriptValueWithKey:kIKUProjectName],
       nil]];
     
-    [steps addObject:
-     [TaskStep taskStepWithCommandLine:
-      @"/bin/rm",
-      @"-Rf",
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
-      nil]];
-    [[steps lastObject] setCurrentDirectory:
-     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/bin/rm",
+//      @"-Rf",
+//      [ScriptValue scriptValueWithKey:kIKUProjectName],
+//      nil]];
+//    [[steps lastObject] setCurrentDirectory:
+//     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
 
     
 
