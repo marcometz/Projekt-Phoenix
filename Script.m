@@ -34,6 +34,7 @@ NSArray *ScriptSteps()
 	NSMutableArray *steps = [NSMutableArray array];
 
 #warning append to string.
+    
 //    [steps addObject:
 //     [BlockStep blockStepWithBlock:^(BlockStep *step) {
 //        NSMutableString *gemfile = [NSMutableString stringWithContentsOfFile:[@"~/Desktop/gemfile" stringByExpandingTildeInPath] encoding:NSUTF8StringEncoding error:nil];
