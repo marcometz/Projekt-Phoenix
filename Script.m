@@ -21,8 +21,7 @@
 #import "UniqueTemporaryDirectory.h"
 #import "RegexConditionalStep.h"
 #import "ConcatenateStep.h"
-#import "NSTimer+PSYBlockTimer.h"
-
+#import "CollectionSelectStep.h"
 
 //
 // ScriptSteps
@@ -32,7 +31,8 @@
 NSArray *ScriptSteps()
 {
 	NSMutableArray *steps = [NSMutableArray array];
-
+    
+    [steps addObject:[CollectionSelectStep collectionSelectStepWithTitle:@"Mein Titel" collection:[NSArray arrayWithObjects:@"Erstens", @"Zweitens", nil] outputStateKey:@"arrayOutput"]];
 #warning append to string.
     
 //    [steps addObject:
