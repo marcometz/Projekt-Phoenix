@@ -6,8 +6,9 @@
     #import <Cocoa/Cocoa.h>
     #define kIKUProjectName         (@"kIKUProjectName")
     #define kIKUProjectPath         (@"kIKUProjectPath")
-    #define kIKUProjectDirectory     (@"kIKUProjectDirectory")
-
+    #define kIKUProjectDirectory    (@"kIKUProjectDirectory")
+    #define kIKUMasterFilesPath     (@"kIKUMasterFilesPath")
+    #define kIKUDBPassword          (@"kIKUDBPassword")
     #ifdef DEBUG
     #   define DLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
     #else
