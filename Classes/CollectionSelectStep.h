@@ -16,8 +16,10 @@
 
 @interface CollectionSelectStep : ScriptStep
 @property (copy) NSString *outputStateKey;
+@property (copy) NSString *inputStateKey;
 @property (retain) NSArray *collection;
 @property (retain) NSMutableArray *selection;
 
 + (CollectionSelectStep *)collectionSelectStepWithTitle:(NSString *)aTitle collection:(NSArray *)collection outputStateKey:(NSString *)key;
++ (CollectionSelectStep *)collectionSelectStepWithTitle:(NSString *)aTitle stateKey:(NSString *)stateKey outputStateKey:(NSString *)key;
 @end
