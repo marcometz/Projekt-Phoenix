@@ -12,6 +12,7 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		A64C83EA1486970E00B294A0 /* NSTimer+PSYBlockTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = A64C83E91486970E00B294A0 /* NSTimer+PSYBlockTimer.m */; };
+		A6E7964D1487E5410098C124 /* CollectionSelectStep.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E7964C1487E5410098C124 /* CollectionSelectStep.m */; };
 		C927E02612826AF00070E224 /* UniqueTemporaryDirectory.m in Sources */ = {isa = PBXBuildFile; fileRef = C927E010128265080070E224 /* UniqueTemporaryDirectory.m */; };
 		C927E060128271630070E224 /* RegexConditionalStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C927E05F128271630070E224 /* RegexConditionalStep.m */; };
 		C927E52B128365430070E224 /* ConditionalStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C927E52A128365430070E224 /* ConditionalStep.m */; };
@@ -50,6 +51,8 @@
 		8D1107320486CEB800E47090 /* CocoaScript.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CocoaScript.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A64C83E81486970D00B294A0 /* NSTimer+PSYBlockTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+PSYBlockTimer.h"; sourceTree = "<group>"; };
 		A64C83E91486970E00B294A0 /* NSTimer+PSYBlockTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+PSYBlockTimer.m"; sourceTree = "<group>"; };
+		A6E7964B1487E5410098C124 /* CollectionSelectStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionSelectStep.h; sourceTree = "<group>"; };
+		A6E7964C1487E5410098C124 /* CollectionSelectStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionSelectStep.m; sourceTree = "<group>"; };
 		C927E00F128265080070E224 /* UniqueTemporaryDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniqueTemporaryDirectory.h; sourceTree = "<group>"; };
 		C927E010128265080070E224 /* UniqueTemporaryDirectory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UniqueTemporaryDirectory.m; sourceTree = "<group>"; };
 		C927E05E128271630070E224 /* RegexConditionalStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexConditionalStep.h; sourceTree = "<group>"; };
@@ -221,6 +224,8 @@
 				C927E52A128365430070E224 /* ConditionalStep.m */,
 				C927E05E128271630070E224 /* RegexConditionalStep.h */,
 				C927E05F128271630070E224 /* RegexConditionalStep.m */,
+				A6E7964B1487E5410098C124 /* CollectionSelectStep.h */,
+				A6E7964C1487E5410098C124 /* CollectionSelectStep.m */,
 			);
 			name = ScriptSteps;
 			sourceTree = "<group>";
@@ -277,6 +282,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "ikusei GmbH";
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CocoaScript" */;
 			compatibilityVersion = "Xcode 3.1";
 			developmentRegion = English;
@@ -338,6 +346,7 @@
 				C927E52B128365430070E224 /* ConditionalStep.m in Sources */,
 				C93B98E8128D1C47009477C1 /* ConcatenateStep.m in Sources */,
 				A64C83EA1486970E00B294A0 /* NSTimer+PSYBlockTimer.m in Sources */,
+				A6E7964D1487E5410098C124 /* CollectionSelectStep.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +393,7 @@
 				GCC_PREFIX_HEADER = CocoaScript_Prefix.pch;
 				INFOPLIST_FILE = "CocoaScript-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = CocoaScript;
 			};
 			name = Debug;
@@ -398,6 +408,7 @@
 				GCC_PREFIX_HEADER = CocoaScript_Prefix.pch;
 				INFOPLIST_FILE = "CocoaScript-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = CocoaScript;
 			};
 			name = Release;

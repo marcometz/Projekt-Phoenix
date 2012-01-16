@@ -21,8 +21,7 @@
 #import "UniqueTemporaryDirectory.h"
 #import "RegexConditionalStep.h"
 #import "ConcatenateStep.h"
-#import "NSTimer+PSYBlockTimer.h"
-
+#import "CollectionSelectStep.h"
 
 //
 // ScriptSteps
@@ -32,7 +31,7 @@
 NSArray *ScriptSteps()
 {
 	NSMutableArray *steps = [NSMutableArray array];
-
+         
     //
     // Dialog to name project
     //
@@ -191,85 +190,16 @@ NSArray *ScriptSteps()
       @"cd",
       [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
       @"&&",
-      @"rvm",
+      [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath],
       @"use",
       @"1.8.7",
       @"&&",
-      @"rvm",
+      [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath],
       @"gemset",
       @"create",
       [ScriptValue scriptValueWithKey:kIKUProjectName],
-      @"&&",
-      @"rvm",
-      @"gemset",
-      @"use",
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
-      @"&&",
-      @"gem install rails --no-rdoc --no-ri",
-      @"&&",
-      @"bundle install",
-      @"&&",
-      @"rails new . -d mysql",
       nil]];
 	[[steps lastObject] setTitle:@"Create rvm gemset on server"];
-
-//    [steps addObject:
-//     [BlockStep blockStepWithBlock:^(BlockStep *step) {
-//        [step.currentQueue setSuspended:YES];
-//        NSAppleScript* applescript = [[[NSAppleScript alloc] initWithSource:
-//                                       [NSString stringWithFormat:
-//                                        @"tell application \"Terminal\"\n"
-//                                        @"	do script \"rvm use 1.8.7\"\n"
-//                                        @"	do script \"rvm gemset create %@\" in window 1\n"
-//                                        @"	do script \"rvm gemset use %@\" in window 1\n"
-//                                        @"  do script \"cd %@\" in window 1\n"
-//                                        @"	do script \"gem install rails --no-rdoc --no-ri\" in window 1\n"
-//                                        @"  do script \"bundle install\" in window 1\n"
-//                                        @"  do script \"rails new . -d mysql\" in window 1\n"
-//                                        @"  do script \"touch rails_installed\" in window 1\n"
-//                                        @"end tell\n", [step.currentQueue stateValueForKey:kIKUProjectName], [step.currentQueue stateValueForKey:kIKUProjectName], [step.currentQueue stateValueForKey:kIKUProjectDirectory]]] autorelease];
-//        NSDictionary *errorDict = nil;
-//        [applescript executeAndReturnError:&errorDict];
-//        if (errorDict)
-//        {
-//            [step replaceAndApplyErrorToErrorString:[errorDict description]];
-//            return;
-//        }
-//        
-//        while (![[NSFileManager defaultManager] isReadableFileAtPath:[NSString stringWithFormat:@"%@/rails_installed", [step.currentQueue stateValueForKey:kIKUProjectDirectory]]]) {
-//            sleep(5);
-//            NSLog(@"wir haben gewartet");
-//        }
-//        [step.currentQueue setSuspended:NO];
-//        NSError *error = nil;
-//        
-//        if (![NSFileManager.defaultManager removeItemAtPath:[NSString stringWithFormat:@"%@/rails_installed", [step.currentQueue stateValueForKey:kIKUProjectDirectory]] error:&error]) {
-//            DLog(@"Failed to remove file: %@", [error localizedDescription]);
-//            NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
-//            if(detailedErrors != nil && [detailedErrors count] > 0) {
-//                for(NSError* detailedError in detailedErrors) {
-//                    DLog(@"DetailedError: %@", [detailedError userInfo]);
-//                }
-//            } else {
-//                DLog(@"%@", [error userInfo]);
-//            }
-//        } else {
-//            NSAppleScript* applescript = [[[NSAppleScript alloc] initWithSource:
-//                                           [NSString stringWithFormat:
-//                                            @"tell application \"Terminal\"\n"
-//                                            @"  close window 1\n"
-//                                            @"end tell\n"]] autorelease];
-//            NSDictionary *errorDict = nil;
-//            [applescript executeAndReturnError:&errorDict];
-//            if (errorDict)
-//            {
-//                [step replaceAndApplyErrorToErrorString:[errorDict description]];
-//                return;
-//            }
-//        }
-//    }]];
-//
-//	[[steps lastObject] setTitle:@"AppleScript: configure rvm gemset and install rails."];
 
     //
     // Create the input for the .rvmrc file
@@ -282,7 +212,7 @@ NSArray *ScriptSteps()
       [ScriptValue scriptValueWithKey:kIKUProjectName],
       nil]];
 	[[steps lastObject] setTitle:@"Set .rvmrc value"];
-
+    
     //
     // Set the right value into .rvmrc
     //
@@ -293,6 +223,450 @@ NSArray *ScriptSteps()
                                               attributes:nil];
         
     }]];
+
+    //
+    // Create the input for the .rvmrc file
+    //
+    [steps addObject:
+     [ConcatenateStep
+      concatenateStepWithOutputKey:@"gemsetValue"
+      andStrings:
+      [NSString stringWithFormat:@"%@ use 1.8.7@", [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath]],
+      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      nil]];
+	[[steps lastObject] setTitle:@"Set .rvmrc value"];
+
+    //
+    // Install rails
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      [ScriptValue scriptValueWithKey:@"gemsetValue"],
+      @"exec",
+      @"gem",
+      @"install",
+      @"rails",
+      @"--no-rdoc",
+      @"--no-ri",
+      nil]];
+	[[steps lastObject] setTitle:@"install rails"];
+
+    //
+    // Create a new rails app in the project dir with MySQL as database
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      [ScriptValue scriptValueWithKey:@"gemsetValue"],
+      @"exec",
+      @"rails",
+      @"new",
+      @".",
+      @"-d",
+      @"mysql",
+      nil]];
+	[[steps lastObject] setTitle:@"create new rails app"];
+    
+    //
+    // Add Capistrano and other essential Gems
+    //
+    [steps addObject:[BlockStep blockStepWithBlock:^(BlockStep *step) {
+        NSError *error = nil;
+        NSMutableString *gemfile_original = [NSMutableString stringWithContentsOfFile:[NSString stringWithFormat:@"%@/Gemfile", [step.currentQueue stateValueForKey:kIKUProjectDirectory]] encoding:NSUTF8StringEncoding error:&error];
+        if (error) {
+            DLog(@"Failed to save to data store: %@", [error localizedDescription]);
+            NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+            if(detailedErrors != nil && [detailedErrors count] > 0) {
+                for(NSError* detailedError in detailedErrors) {
+                    DLog(@"DetailedError: %@", [detailedError userInfo]);
+                }
+            } else {
+                DLog(@"%@", [error userInfo]);
+            }
+        } else {
+            [gemfile_original appendString:@"\ngem 'activeadmin'"];
+            [gemfile_original appendString:@"\ngem 'pry'"];
+            [gemfile_original appendString:@"\ngem 'andand'"];
+            [gemfile_original appendString:@"\ngem 'annotate'"];
+            [gemfile_original appendString:@"\ngem 'capistrano'"];
+            [gemfile_original appendString:@"\ngem 'execjs'"];
+            [gemfile_original appendString:@"\ngem 'therubyracer'"];
+            [gemfile_original appendString:@"\ngem 'passenger'"];
+            NSError *writeError = nil;
+            [gemfile_original writeToFile:[NSString stringWithFormat:@"%@/Gemfile", [step.currentQueue stateValueForKey:kIKUProjectDirectory]] atomically:YES encoding:NSUTF8StringEncoding error:&writeError];
+            
+            if (writeError) {
+                DLog(@"Failed to save to data store: %@", [writeError localizedDescription]);
+                NSArray* detailedErrors = [[writeError userInfo] objectForKey:NSDetailedErrorsKey];
+                if(detailedErrors != nil && [detailedErrors count] > 0) {
+                    for(NSError* detailedError in detailedErrors) {
+                        DLog(@"DetailedError: %@", [detailedError userInfo]);
+                    }
+                } else {
+                    DLog(@"%@", [writeError userInfo]);
+                }
+            }
+        }
+    }]];
+
+    //
+    // Bundle install the new gems
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      [ScriptValue scriptValueWithKey:@"gemsetValue"],
+      @"exec",
+      @"bundle",
+      @"install",
+      nil]];
+	[[steps lastObject] setTitle:@"bundle install new gems"];
+
+    //
+    // Capify
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      [ScriptValue scriptValueWithKey:@"gemsetValue"],
+      @"exec",
+      @"bundle",
+      @"exec",
+      @"capify",
+      @".",
+      nil]];
+	[[steps lastObject] setTitle:@"capify"];
+
+#pragma mark - Masterfiles
+    //
+    // Fetch masterfile-templates from github git://github.com/ikuseiGmbH/masterfiles.git
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/git",
+      @"clone",
+      @"git://github.com/ikuseiGmbH/masterfiles.git",
+      nil]];
+	[[steps lastObject] setTitle:@"Checkout master templates"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectPath]];
+
+    //
+    // Create the input for the .rvmrc file
+    //
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:kIKUMasterFilesPath andStrings:[ScriptValue scriptValueWithKey:kIKUProjectDirectory], @"/../masterfiles/templates/", nil]];
+	[[steps lastObject] setTitle:@"Build path to masterfiles"];
+
+#pragma mark - .gitignore
+    //
+    // Customize the templates
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/cp",
+      @"-v",
+      @"../masterfiles/templates/.gitignore.tmpl",
+      @".gitignore",
+      nil]];
+	[[steps lastObject] setTitle:@"Customize templates"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/bin/cp",
+//      @"-v",
+//      @"../masterfiles/templates/capistrano.tmpl",
+//      @"config/deploy.rb",
+//      nil]];
+//	[[steps lastObject] setTitle:@"Customize templates"];
+//    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"project_name-sed" andStrings:@"'s/project_name/", [ScriptValue scriptValueWithKey:kIKUProjectName],@"/g'", nil]];
+	[[steps lastObject] setTitle:@"capistrano text replacements"];
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      @"sed",
+      [ScriptValue scriptValueWithKey:@"project_name-sed"],
+      @"../masterfiles/templates/capistrano.tmpl",
+      @">",
+      @"config/deploy.rb.2",
+      nil]];
+	[[steps lastObject] setTitle:@"Customize templates"];
+//    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/mv",
+      @"config/deploy.rb.2",
+      @"config/deploy.rb",
+      nil]];
+	[[steps lastObject] setTitle:@"Move deploy.rb"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+#pragma mark - Database YML
+    //
+    // Copy database tmpl
+    //
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/bin/cp",
+//      @"-v",
+//      @"../masterfiles/templates/database.yml.tmpl",
+//      @"config/database.yml.tmpl",
+//      nil]];
+//	[[steps lastObject] setTitle:@"Customize templates"];
+//    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    //
+    // Replace project_name with real project name
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      @"sed",
+      [ScriptValue scriptValueWithKey:@"project_name-sed"],
+      @"../masterfiles/templates/database.yml.tmpl",
+      @">",
+      @"config/database.yml.2",
+      nil]];
+	[[steps lastObject] setTitle:@"Customize templates"];
+
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/mv",
+      @"config/database.yml.2",
+      @"config/database.yml",
+      nil]];
+	[[steps lastObject] setTitle:@"Move deploy.rb"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    //
+    // Prompt the user to choose a password
+    //
+    [steps addObject:
+     [PromptStep promptStepWithTitle:@"Please choose a password for the database"
+                        initialValue:@""
+                      outputStateKey:kIKUDBPassword]];
+    [[steps lastObject] setTitle:@"Choose DB password"];
+    
+    //
+    // Replace db_password with proper password
+    //
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"database-sed2" andStrings:@"'s/db_password/", [ScriptValue scriptValueWithKey:kIKUDBPassword],@"/g'", nil]];
+	[[steps lastObject] setTitle:@"Database text replacements"];
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      @"sed",
+      [ScriptValue scriptValueWithKey:@"database-sed2"],
+      @"config/database.yml",
+      @">",
+      @"config/database.yml.tmp",
+      nil]];
+	[[steps lastObject] setTitle:@"Customize templates"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/cp",
+      @"config/database.yml.tmp",
+      @"config/database.yml",
+      nil]];
+	[[steps lastObject] setTitle:@"Customize templates"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+#pragma mark - Server Templates
+
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/mkdir",
+      @"config/templates",
+      nil]];
+	[[steps lastObject] setTitle:@"Create Server template dir"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    //
+    // Server templates #1
+    // Replace project_name with real project name
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      @"sed",
+      [ScriptValue scriptValueWithKey:@"project_name-sed"],
+      @"../masterfiles/templates/server_templates/create_database.yml",
+      @">",
+      @"config/templates/create_database.mysql",
+      nil]];
+	[[steps lastObject] setTitle:@"Server MySQL template"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      @"sed",
+      [ScriptValue scriptValueWithKey:@"database-sed2"],
+      @"config/templates/create_database.mysql",
+      @">",
+      @"config/templates/create_database.mysql.2",
+      nil]];
+	[[steps lastObject] setTitle:@"mysql password"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/mv",
+      @"config/templates/create_database.mysql.2",
+      @"config/templates/create_database.mysql",
+      nil]];
+	[[steps lastObject] setTitle:@"mysql db rename"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+#pragma mark - Gemfile
+    //
+    // Copy Gemlistfile to project directory
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/cp",
+      @"-v",
+      @"../masterfiles/templates/gemfile.tmpl",
+      @"Gemfile.tmpl",
+      nil]];
+	[[steps lastObject] setTitle:@"Customize templates"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    //
+    // Build a string for the gemlistpath
+    //
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"gemfilepath" andStrings:[ScriptValue scriptValueWithKey:kIKUProjectDirectory], @"/Gemfile.tmpl", nil]];
+	[[steps lastObject] setTitle:@"Build path to masterfiles"];
+    
+    //
+    // Build Array/List for CollectionSelectStep
+    //
+    [steps addObject:[BlockStep blockStepWithBlock:^(BlockStep *step) {
+        NSError *error = nil;
+        NSString *gemlistString = [NSString stringWithContentsOfFile:[step.currentQueue stateValueForKey:@"gemfilepath"] encoding:NSUTF8StringEncoding error:&error];
+        if (error) {
+            DLog(@"Failed to save to data store: %@", [error localizedDescription]);
+            NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+            if(detailedErrors != nil && [detailedErrors count] > 0) {
+                for(NSError* detailedError in detailedErrors) {
+                    DLog(@"DetailedError: %@", [detailedError userInfo]);
+                }
+            } else {
+                DLog(@"%@", [error userInfo]);
+            }
+        } else {
+            NSArray *gemlistArray = [gemlistString componentsSeparatedByString:@"\n"];
+//            [NSUserDefaults.standardUserDefaults setObject:gemlistArray forKey:@"gemlistArray"];
+            [step.currentQueue setStateValue:gemlistArray forKey:@"gemlistArray"];
+        }
+    }]];
+    
+    //
+    // Show NSPanel with Gem Collection 
+    //
+    CollectionSelectStep *colStep = [CollectionSelectStep collectionSelectStepWithTitle:@"Bitte gems aussuchen" stateKey:@"gemlistArray" outputStateKey:@"arrayOutput"];
+    [steps addObject:colStep];
+    
+    //
+    // Build a path for the final Gemfile
+    //
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"finalGemfile" andStrings:[ScriptValue scriptValueWithKey:kIKUProjectDirectory], @"/Gemfile", nil]];
+	[[steps lastObject] setTitle:@"Build path to final Gemfile"];
+
+    //
+    // Write selected Gems into the final Gemfile
+    //
+    [steps addObject:[BlockStep blockStepWithBlock:^(BlockStep *step) {
+        NSArray *gemCollection = [[[NSArray alloc] initWithArray:[step.currentQueue stateValueForKey:@"arrayOutput"]] autorelease];
+        NSError *error = nil;
+        NSMutableString *gemString = [NSMutableString  stringWithContentsOfFile:[step.currentQueue stateValueForKey:@"finalGemfile"] encoding:NSUTF8StringEncoding error:&error];
+        
+        if (error) {
+            DLog(@"Failed to save to data store: %@", [error localizedDescription]);
+            NSArray* detailedErrors = [[error userInfo] objectForKey:NSDetailedErrorsKey];
+            if(detailedErrors != nil && [detailedErrors count] > 0) {
+                for(NSError* detailedError in detailedErrors) {
+                    DLog(@"DetailedError: %@", [detailedError userInfo]);
+                }
+            } else {
+                DLog(@"%@", [error userInfo]);
+            }
+        } else {
+            [gemCollection enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+                [gemString appendFormat:@"%@\n", obj];
+            }];
+        }
+        //gemstring write to file
+        NSError *writeError = nil;
+        [gemString writeToFile:[NSString stringWithFormat:@"%@/Gemfile", [step.currentQueue stateValueForKey:kIKUProjectDirectory]] atomically:YES encoding:NSUTF8StringEncoding error:&writeError];
+        if (writeError) {
+            DLog(@"Failed to save to data store: %@", [writeError localizedDescription]);
+            NSArray* detailedErrors = [[writeError userInfo] objectForKey:NSDetailedErrorsKey];
+            if(detailedErrors != nil && [detailedErrors count] > 0) {
+                for(NSError* detailedError in detailedErrors) {
+                    DLog(@"DetailedError: %@", [detailedError userInfo]);
+                }
+            } else {
+                DLog(@"%@", [writeError userInfo]);
+            }
+        }
+    }]];
+    
+    
+    /*
+ 
+ <VirtualHost *:80>    
+ ServerName mercedes.ikusei.de    
+ DocumentRoot /home/ikusei/mercedes_charity/current/public    
+ RackBaseURI /    
+ <Directory /home/ikusei/mercedes_charity/public>       
+ AllowOverride all       
+ Options -MultiViews   
+ </Directory>
+ </VirtualHost>
+
+ */
 
     
 #warning Cleanup im dev mode
@@ -312,6 +686,15 @@ NSArray *ScriptSteps()
 //      nil]];
 //    [[steps lastObject] setCurrentDirectory:
 //     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
+
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/rm",
+      @"-Rf",
+      @"masterfiles",
+      nil]];
+    [[steps lastObject] setCurrentDirectory:
+     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
 
     
 
