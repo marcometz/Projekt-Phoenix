@@ -656,15 +656,15 @@ NSArray *ScriptSteps()
     
     /*
  
- <VirtualHost *:80>    
- ServerName mercedes.ikusei.de    
- DocumentRoot /home/ikusei/mercedes_charity/current/public    
- RackBaseURI /    
- <Directory /home/ikusei/mercedes_charity/public>       
- AllowOverride all       
- Options -MultiViews   
- </Directory>
- </VirtualHost>
+<VirtualHost *:80>
+     ServerName mercedes.ikusei.de
+     DocumentRoot /home/ikusei/mercedes_charity/current/public
+     RackBaseURI /
+     <Directory /home/ikusei/mercedes_charity/public>
+        AllowOverride all
+        Options -MultiViews
+     </Directory>
+</VirtualHost>
 
  */
 
