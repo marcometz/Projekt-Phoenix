@@ -87,7 +87,7 @@ NSArray *ScriptSteps()
       @"git init --bare",
       nil]];
 	[[steps lastObject] setTitle:@"Create bare git repo on server"];
-
+#warning ist jetzt für 1.9.2 konfiguriert!!!
     //
     // Create a gemset on the server 
     //
@@ -192,7 +192,7 @@ NSArray *ScriptSteps()
       @"&&",
       [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath],
       @"use",
-      @"1.8.7",
+      @"1.9.2",
       @"&&",
       [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath],
       @"gemset",
@@ -208,7 +208,7 @@ NSArray *ScriptSteps()
      [ConcatenateStep
       concatenateStepWithOutputKey:@"rvmrcValue"
       andStrings:
-      @"rvm use 1.8.7@",
+      @"rvm use 1.9.2@",
       [ScriptValue scriptValueWithKey:kIKUProjectName],
       nil]];
 	[[steps lastObject] setTitle:@"Set .rvmrc value"];
@@ -231,7 +231,7 @@ NSArray *ScriptSteps()
      [ConcatenateStep
       concatenateStepWithOutputKey:@"gemsetValue"
       andStrings:
-      [NSString stringWithFormat:@"%@ use 1.8.7@", [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath]],
+      [NSString stringWithFormat:@"%@ use 1.9.2@", [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath]],
       [ScriptValue scriptValueWithKey:kIKUProjectName],
       nil]];
 	[[steps lastObject] setTitle:@"Set .rvmrc value"];
@@ -293,13 +293,14 @@ NSArray *ScriptSteps()
                 DLog(@"%@", [error userInfo]);
             }
         } else {
-            [gemfile_original appendString:@"\ngem 'activeadmin'"];
+            [gemfile_original appendString:@"\ngem 'goldencobra', :git => 'git@github.com:ikusei/Golden-Cobra.git'"];
+//            [gemfile_original appendString:@"\ngem 'activeadmin'"];
             [gemfile_original appendString:@"\ngem 'pry'"];
             [gemfile_original appendString:@"\ngem 'andand'"];
-            [gemfile_original appendString:@"\ngem 'annotate'"];
+//            [gemfile_original appendString:@"\ngem 'annotate'"];
             [gemfile_original appendString:@"\ngem 'capistrano'"];
-            [gemfile_original appendString:@"\ngem 'execjs'"];
-            [gemfile_original appendString:@"\ngem 'therubyracer'"];
+//            [gemfile_original appendString:@"\ngem 'execjs'"];
+//            [gemfile_original appendString:@"\ngem 'therubyracer'"];
             [gemfile_original appendString:@"\ngem 'passenger'"];
             NSError *writeError = nil;
             [gemfile_original writeToFile:[NSString stringWithFormat:@"%@/Gemfile", [step.currentQueue stateValueForKey:kIKUProjectDirectory]] atomically:YES encoding:NSUTF8StringEncoding error:&writeError];
