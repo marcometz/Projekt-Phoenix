@@ -27,7 +27,7 @@
     step.title = aTitle;
     step.outputStateKey = key;
     step.collection = collection;
-    NSLog(@"array wird übergeben: %@", collection);
+    NSLog(@"array wird übergeben: %@", step.collection);
     return step;
 }
 

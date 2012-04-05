@@ -36,6 +36,7 @@
 		C9CA7B3C12817E8D00C14F2B /* VersionStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C9CA7B3B12817E8D00C14F2B /* VersionStep.m */; };
 		C9CA7B4112817ECC00C14F2B /* PromptStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C9CA7B4012817ECC00C14F2B /* PromptStep.m */; };
 		C9F2551E12823A7000420BE9 /* BlockStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F2551D12823A7000420BE9 /* BlockStep.m */; };
+		DD98CF09152DDBC8004746BE /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = DD98CF08152DDBC8004746BE /* README.markdown */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +94,7 @@
 		C9CA7B4012817ECC00C14F2B /* PromptStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PromptStep.m; sourceTree = "<group>"; };
 		C9F2551C12823A7000420BE9 /* BlockStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlockStep.h; sourceTree = "<group>"; };
 		C9F2551D12823A7000420BE9 /* BlockStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockStep.m; sourceTree = "<group>"; };
+		DD98CF08152DDBC8004746BE /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +149,7 @@
 		29B97314FDCFA39411CA2CEA /* CocoaScript */ = {
 			isa = PBXGroup;
 			children = (
+				DD98CF08152DDBC8004746BE /* README.markdown */,
 				C964AE121280E56D000A9A83 /* Script.m */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -316,6 +319,7 @@
 				C94B21CB127F934000A7A9A5 /* cross.png in Resources */,
 				C94B2D0B127FF04100A7A9A5 /* warn.png in Resources */,
 				C935969D128152F500239E0B /* CocoaScript.icns in Resources */,
+				DD98CF09152DDBC8004746BE /* README.markdown in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +388,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "Mac Developer: Holger Frohloff (L6BK925UDM)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -395,6 +400,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = CocoaScript;
+				PROVISIONING_PROFILE = "CD4F7902-1757-41A8-AE09-C0233569A584";
 			};
 			name = Debug;
 		};
@@ -402,6 +408,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "Mac Developer: Holger Frohloff (L6BK925UDM)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -410,6 +417,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = CocoaScript;
+				PROVISIONING_PROFILE = "CD4F7902-1757-41A8-AE09-C0233569A584";
 			};
 			name = Release;
 		};

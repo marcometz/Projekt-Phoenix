@@ -734,7 +734,7 @@
 //
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"<ScriptValue: %@>", stateKey];
+	return [NSString stringWithFormat:@"%@", stateKey];
 }
 
 //
