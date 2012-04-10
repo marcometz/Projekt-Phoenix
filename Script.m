@@ -23,7 +23,6 @@
 #import "ConcatenateStep.h"
 #import "CollectionSelectStep.h"
 
-static NSString* serverName;
 //
 // ScriptSteps
 //
@@ -32,7 +31,8 @@ static NSString* serverName;
 NSArray *ScriptSteps()
 {
 	NSMutableArray *steps = [NSMutableArray array];
-         
+
+    
     //
     // Dialog to name project
     //
@@ -40,6 +40,11 @@ NSArray *ScriptSteps()
                                         initialValue:@""
                                       outputStateKey:kIKUProjectName]];
     [[steps lastObject] setTitle:@"Set a project name"];
+
+    [steps addObject:[BlockStep blockStepWithBlock:^(BlockStep *step) {
+        NSString *serverString =[step.currentQueue stateValueForKey:kIKUProjectName];// = [ScriptValue scriptValueWithKey:kIKUProjectName];
+        [step.currentQueue setStateValue:[NSString stringWithString:[serverString lowercaseString]] forKey:@"downcased-projectname"];
+    }]];
 
     //
     // Build Array/List for CollectionSelectStep
@@ -96,7 +101,7 @@ NSArray *ScriptSteps()
       @"/usr/bin/ssh",
       [ScriptValue scriptValueWithKey:@"selected-server"],
       @"mkdir",
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      [ScriptValue scriptValueWithKey:@"downcased-projectname"],
       nil]];
 	[[steps lastObject] setTitle:@"Create empty project dir on server (GIT)"];
 
@@ -110,7 +115,7 @@ NSArray *ScriptSteps()
       @"/usr/bin/ssh",
       [ScriptValue scriptValueWithKey:@"login-string"],
       @"mkdir",
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      [ScriptValue scriptValueWithKey:@"downcased-projectname"],
       nil]];
 	[[steps lastObject] setTitle:@"Create empty project dir on server (USER)"];
 
@@ -123,7 +128,7 @@ NSArray *ScriptSteps()
       @"/usr/bin/ssh",
       [ScriptValue scriptValueWithKey:@"selected-server"],
       @"cd",
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      [ScriptValue scriptValueWithKey:@"downcased-projectname"],
       @"&&",
       @"git init --bare",
       nil]];
@@ -154,7 +159,7 @@ NSArray *ScriptSteps()
       @"rvm",
       @"gemset",
       @"create",
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      [ScriptValue scriptValueWithKey:@"downcased-projectname"],
       nil]];
 	[[steps lastObject] setTitle:@"Create rvm gemset on server"];
     
@@ -182,7 +187,7 @@ NSArray *ScriptSteps()
       concatenateStepWithOutputKey:@"clonePath"
       andStrings:
       [ScriptValue scriptValueWithKey:kIKUgitAtServer],
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      [ScriptValue scriptValueWithKey:@"downcased-projectname"],
       nil]];
 	[[steps lastObject] setTitle:@"Create path to repository"];
     
@@ -210,7 +215,7 @@ NSArray *ScriptSteps()
       andStrings:
       [ScriptValue scriptValueWithKey:kIKUProjectPath],
       @"/",
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      [ScriptValue scriptValueWithKey:@"downcased-projectname"],
       nil]];
 	[[steps lastObject] setTitle:@"Find project directory"];
     
@@ -248,12 +253,12 @@ NSArray *ScriptSteps()
       @"&&",
       [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath],
       @"use",
-      [ScriptValue scriptValueWithKey:kIKURubyVersion],
+      @"1.9.2-p290",
       @"&&",
       [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath],
       @"gemset",
       @"create",
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      [ScriptValue scriptValueWithKey:@"downcased-projectname"],
       nil]];
 	[[steps lastObject] setTitle:@"Create rvm gemset on server"];
     
@@ -263,7 +268,7 @@ NSArray *ScriptSteps()
     [steps addObject:
      [ConcatenateStep
       concatenateStepWithOutputKey:@"rvmrcValue"
-      andStrings:@"rvm use", [ScriptValue scriptValueWithKey:kIKURubyVersion], @"@", [ScriptValue scriptValueWithKey:kIKUProjectName], nil]];
+      andStrings:@"rvm use ", [ScriptValue scriptValueWithKey:kIKURubyVersion], @"@", [ScriptValue scriptValueWithKey:@"downcased-projectname"], nil]];
 	[[steps lastObject] setTitle:@"Set .rvmrc value"];
     
     //
@@ -283,9 +288,7 @@ NSArray *ScriptSteps()
     [steps addObject:
      [ConcatenateStep
       concatenateStepWithOutputKey:@"gemsetValue"
-      andStrings:
-      [NSString stringWithFormat:@"%@ use %@@", [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath], [ScriptValue scriptValueWithKey:kIKURubyVersion]],
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
+      andStrings:[NSString stringWithFormat:@"%@ use ", [@"~/.rvm/bin/rvm" stringByExpandingTildeInPath]], @"1.9.2-p290", @"@", [ScriptValue scriptValueWithKey:@"downcased-projectname"],
       nil]];
 	[[steps lastObject] setTitle:@"Set .rvmrc value"];
     
@@ -328,7 +331,19 @@ NSArray *ScriptSteps()
       @"mysql",
       nil]];
 	[[steps lastObject] setTitle:@"create new rails app"];
-    
+
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      @"rm",
+      @"public/index.html",
+      nil]];
+	[[steps lastObject] setTitle:@"Delete index.html"];
+
     //
     // Add Capistrano and other essential Gems
     //
@@ -346,14 +361,10 @@ NSArray *ScriptSteps()
                 DLog(@"%@", [error userInfo]);
             }
         } else {
-            [gemfile_original appendString:@"\ngem 'goldencobra', :git => 'git@github.com:ikusei/GoldenCobra.git'"];
-            //            [gemfile_original appendString:@"\ngem 'activeadmin'"];
+            [gemfile_original appendString:@"\ngem 'goldencobra', :git => 'git://github.com/ikusei/Goldencobra.git'"];
             [gemfile_original appendString:@"\ngem 'pry'"];
             [gemfile_original appendString:@"\ngem 'andand'"];
-            //            [gemfile_original appendString:@"\ngem 'annotate'"];
             [gemfile_original appendString:@"\ngem 'capistrano'"];
-            //            [gemfile_original appendString:@"\ngem 'execjs'"];
-            //            [gemfile_original appendString:@"\ngem 'therubyracer'"];
             [gemfile_original appendString:@"\ngem 'passenger'"];
             NSError *writeError = nil;
             [gemfile_original writeToFile:[NSString stringWithFormat:@"%@/Gemfile", [step.currentQueue stateValueForKey:kIKUProjectDirectory]] atomically:YES encoding:NSUTF8StringEncoding error:&writeError];
@@ -441,17 +452,8 @@ NSArray *ScriptSteps()
 	[[steps lastObject] setTitle:@"Customize templates"];
     [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
     
-    //    [steps addObject:
-    //     [TaskStep taskStepWithCommandLine:
-    //      @"/bin/cp",
-    //      @"-v",
-    //      @"../masterfiles/templates/capistrano.tmpl",
-    //      @"config/deploy.rb",
-    //      nil]];
-    //	[[steps lastObject] setTitle:@"Customize templates"];
-    //    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
     
-    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"project_name-sed" andStrings:@"'s/project_name/", [ScriptValue scriptValueWithKey:kIKUProjectName],@"/g'", nil]];
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"project_name-sed" andStrings:@"'s/project_name/", [ScriptValue scriptValueWithKey:@"downcased-projectname"],@"/g'", nil]];
 	[[steps lastObject] setTitle:@"capistrano text replacements"];
     [steps addObject:
      [TaskStep taskStepWithCommandLine:
@@ -464,7 +466,7 @@ NSArray *ScriptSteps()
       [ScriptValue scriptValueWithKey:@"project_name-sed"],
       @"../masterfiles/templates/capistrano.tmpl",
       @">",
-      @"config/deploy.rb.2",
+      @"config/deploy2.rb",
       nil]];
 	[[steps lastObject] setTitle:@"Customize templates"];
     //    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
@@ -478,7 +480,7 @@ NSArray *ScriptSteps()
                       outputStateKey:kIKUDBPassword]];
     [[steps lastObject] setTitle:@"Choose DB password"];
 
-    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"database-sed2" andStrings:@"'s/db_password/", [ScriptValue scriptValueWithKey:kIKUDBPassword],@"/g'", nil]];
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"database-sed2" andStrings:@"'s/db_password_ersatz/", [ScriptValue scriptValueWithKey:kIKUDBPassword],@"/g'", nil]];
 	[[steps lastObject] setTitle:@"Database text replacements"];
 
     [steps addObject:
@@ -490,9 +492,9 @@ NSArray *ScriptSteps()
       @"&&",
       @"sed",
       [ScriptValue scriptValueWithKey:@"database-sed2"],
-      @"config/deploy.rb.2",
+      @"config/deploy2.rb",
       @">",
-      @"config/deploy.rb.db_password",
+      @"config/deploydb_password.rb",
       nil]];
 	[[steps lastObject] setTitle:@"Move & adjust deploy.rb"];
     [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
@@ -500,7 +502,7 @@ NSArray *ScriptSteps()
     //
     // Set the rvm ruby string inside deploy.rb
     //
-    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"deploy-rvm-ruby-sed" andStrings:@"'s/ruby_string/", [ScriptValue scriptValueWithKey:kIKURubyVersion],@"/g'", nil]];
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"deploy-rvm-ruby-sed" andStrings:@"'s/ruby_string_ersatz/", [ScriptValue scriptValueWithKey:kIKURubyVersion],@"/g'", nil]];
 	[[steps lastObject] setTitle:@"deploy.rb text replacements"];
     
     [steps addObject:
@@ -512,9 +514,9 @@ NSArray *ScriptSteps()
       @"&&",
       @"sed",
       [ScriptValue scriptValueWithKey:@"deploy-rvm-ruby-sed"],
-      @"config/deploy.rb.db_password",
+      @"config/deploydb_password.rb",
       @">",
-      @"config/deploy.rb.rvm",
+      @"config/deployrvm.rb",
       nil]];
 	[[steps lastObject] setTitle:@"Move & adjust deploy.rb"];
     [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
@@ -529,7 +531,7 @@ NSArray *ScriptSteps()
                       outputStateKey:@"root_db_password"]];
     [[steps lastObject] setTitle:@"root password for mysql"];
 
-    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"database-root-sed2" andStrings:@"'s/db_root_password/", [ScriptValue scriptValueWithKey:@"root_db_password"],@"/g'", nil]];
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"database-root-sed2" andStrings:@"'s/db_root_password_ersatz/", [ScriptValue scriptValueWithKey:@"root_db_password"],@"/g'", nil]];
 	[[steps lastObject] setTitle:@"Database root db_password text replacements"];
 
     // SED the root db password
@@ -542,9 +544,9 @@ NSArray *ScriptSteps()
       @"&&",
       @"sed",
       [ScriptValue scriptValueWithKey:@"database-root-sed2"],
-      @"config/deploy.rb.rvm",
+      @"config/deployrvm.rb",
       @">",
-      @"config/deploy.rb",
+      @"config/deploy2.rb",
       nil]];
 	[[steps lastObject] setTitle:@"Move & adjust deploy.rb step 2"];
     [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
@@ -581,15 +583,6 @@ NSArray *ScriptSteps()
       nil]];
 	[[steps lastObject] setTitle:@"Customize templates"];
     
-    [steps addObject:
-     [TaskStep taskStepWithCommandLine:
-      @"/bin/mv",
-      @"config/database.yml.2",
-      @"config/database.yml",
-      nil]];
-	[[steps lastObject] setTitle:@"Move database.yml"];
-    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
-    
     
     //
     // Replace db_password with proper password
@@ -601,23 +594,18 @@ NSArray *ScriptSteps()
       @"cd",
       [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
       @"&&",
+      @"rm",
+      @"config/database.yml",
+      @"&&",
       @"sed",
       [ScriptValue scriptValueWithKey:@"database-sed2"],
-      @"config/database.yml",
+      @"config/database.yml.2",
       @">",
-      @"config/database.yml.tmp",
+      @"config/database.yml",
       nil]];
 	[[steps lastObject] setTitle:@"Customize templates"];
     [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
     
-    [steps addObject:
-     [TaskStep taskStepWithCommandLine:
-      @"/bin/cp",
-      @"config/database.yml.tmp",
-      @"config/database.yml",
-      nil]];
-	[[steps lastObject] setTitle:@"Customize templates"];
-    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
     
 #pragma mark - Server Templates
     
@@ -644,7 +632,7 @@ NSArray *ScriptSteps()
       [ScriptValue scriptValueWithKey:@"project_name-sed"],
       @"../masterfiles/templates/server_templates/create_database.yml",
       @">",
-      @"config/templates/create_database.mysql",
+      @"config/templates/create_database.mysql2",
       nil]];
 	[[steps lastObject] setTitle:@"Server MySQL template"];
     [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
@@ -658,21 +646,13 @@ NSArray *ScriptSteps()
       @"&&",
       @"sed",
       [ScriptValue scriptValueWithKey:@"database-sed2"],
-      @"config/templates/create_database.mysql",
+      @"config/templates/create_database.mysql2",
       @">",
-      @"config/templates/create_database.mysql.2",
+      @"config/templates/create_database.mysql",
       nil]];
 	[[steps lastObject] setTitle:@"mysql password"];
     [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
     
-    [steps addObject:
-     [TaskStep taskStepWithCommandLine:
-      @"/bin/mv",
-      @"config/templates/create_database.mysql.2",
-      @"config/templates/create_database.mysql",
-      nil]];
-	[[steps lastObject] setTitle:@"mysql db rename"];
-    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
     
 #pragma mark - Gemfile
     //
@@ -768,48 +748,13 @@ NSArray *ScriptSteps()
         }
     }]];
     
-    
-    //
-    // Cap Deploy:SETUP
-    //
-    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"cap-deploy" andStrings:@"cap deploy:", nil]];
-	[[steps lastObject] setTitle:@"build string for cap deploy"];
-
-    [steps addObject:
-     [TaskStep taskStepWithCommandLine:
-      @"/usr/bin/ssh",
-      @"localhost",
-      @"cd",
-      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
-      @"&&",
-      [ScriptValue scriptValueWithKey:@"cap-deploy"],
-      @"setup",
-      nil]];
-	[[steps lastObject] setTitle:@"cap deploy:setup"];
-    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
-
-    
-    //
-    // cap deploy:db:setup
-    //
-    [steps addObject:
-     [TaskStep taskStepWithCommandLine:
-      @"/usr/bin/ssh",
-      @"localhost",
-      @"cd",
-      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
-      @"&&",
-      [ScriptValue scriptValueWithKey:@"cap-deploy"],
-      @"db:setup",
-      nil]];
-	[[steps lastObject] setTitle:@"cap deploy:db:setup"];
-    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
-
+ 
     //
     // remove the db root password from deploy.rb
     //
     [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"database-root-remove-sed" andStrings:@"'s/", [ScriptValue scriptValueWithKey:@"root_db_password"], @"/db_root_password/g'", nil]];
 	[[steps lastObject] setTitle:@"Database remove root db_password"];
+
     
     // SED the root db password
     [steps addObject:
@@ -821,21 +766,71 @@ NSArray *ScriptSteps()
       @"&&",
       @"sed",
       [ScriptValue scriptValueWithKey:@"database-root-remove-sed"],
-      @"config/deploy.rb",
+      @"config/deploy2.rb",
       @">",
-      @"config/deploy.rb.tmp",
+      @"config/deploy2tmp.rb",
       nil]];
 	[[steps lastObject] setTitle:@"Move & adjust deploy.rb step 2"];
     [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
-
+    
     [steps addObject:
      [TaskStep taskStepWithCommandLine:
-      @"/bin/mv",
-      @"config/deploy.rb.tmp",
+      @"/usr/bin/ssh",
+      @"localhost",
+      @"cd",
+      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+      @"&&",
+      @"mv",
+      @"-fv",
+      @"config/deploy2tmp.rb",
       @"config/deploy.rb",
       nil]];
 	[[steps lastObject] setTitle:@"deploy.rb rename"];
     [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+//    //
+//    // Cap Deploy:SETUP
+//    //
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/usr/bin/ssh",
+//      @"localhost",
+//      @"cd",
+//      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+//      @"&&",
+//      [ScriptValue scriptValueWithKey:@"gemsetValue"],
+//      @"exec",
+//      @"bundle",
+//      @"exec",
+//      @"cap",
+//      @"deploy:setup",
+//      nil]];
+//	[[steps lastObject] setTitle:@"cap deploy:setup"];
+//    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+//
+//    
+//    //
+//    // cap deploy:db:setup
+//    //
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/usr/bin/ssh",
+//      @"localhost",
+//      @"cd",
+//      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+//      @"&&",
+//      [ScriptValue scriptValueWithKey:@"gemsetValue"],
+//      @"exec",
+//      @"bundle",
+//      @"exec",
+//      @"cap",
+//      @"deploy:db:setup",
+//      @"db:setup",
+//      nil]];
+//	[[steps lastObject] setTitle:@"cap deploy:db:setup"];
+//    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    
 
 
     //
@@ -879,27 +874,138 @@ NSArray *ScriptSteps()
       [ScriptValue scriptValueWithKey:@"project_name-sed"],
       @"sites-available.tmp",
       @">",
-      @"sites-available.upl",
+      @"apache2configfile",
       nil]];
 	[[steps lastObject] setTitle:@"set project name in apache2 config"];
 
+
+//    //
+//    // cap deploy:apache_setup
+//    //
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/usr/bin/ssh",
+//      @"localhost",
+//      @"cd",
+//      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+//      @"&&",
+//      [ScriptValue scriptValueWithKey:@"gemsetValue"],
+//      @"exec",
+//      @"bundle",
+//      @"exec",
+//      @"cap",
+//      @"deploy:apache_setup",
+//      nil]];
+//	[[steps lastObject] setTitle:@"cap deploy:apache_setup"];
+//    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"apache-copy" andStrings:[ScriptValue scriptValueWithKey:@"login-string"], @":/home/ikusei/",[ScriptValue scriptValueWithKey:@"downcased-projectname"], @"/", [ScriptValue scriptValueWithKey:@"downcased-projectname"], nil]];
+	[[steps lastObject] setTitle:@"set string for apache2 config"];
+
+
     //
-    // Clone the repository from the server to the local path
+    // Log in on server and move apache2 config
+    //
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/scp",
+      @"apache2configfile",
+      [ScriptValue scriptValueWithKey:@"apache-copy"],
+      nil]];
+	[[steps lastObject] setTitle:@"copy apache config to server"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+    //
+    // commit changes and push
     //
     [steps addObject:
      [TaskStep taskStepWithCommandLine:
       @"/usr/bin/git",
-      @"clone",
-      [ScriptValue scriptValueWithKey:@"clonePath"],
+      @"add",
+      @".",
       nil]];
     [gitExists addPredicatedStep:[steps lastObject]];
-    
-    [[steps lastObject] setCurrentDirectory:
-     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
-	[[steps lastObject] setTitle:@"Clone repository from server"];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+	[[steps lastObject] setTitle:@"git: add all files"];
 
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/git",
+      @"commit",
+      @"-am",
+      @"'Initial commit with apache2 config'",
+      nil]];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+    [gitExists addPredicatedStep:[steps lastObject]];
+	[[steps lastObject] setTitle:@"git commit: Initial commit"];
+
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/usr/bin/git",
+      @"push",
+      @"origin",
+      @"master",
+      nil]];
+    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+    [gitExists addPredicatedStep:[steps lastObject]];
+	[[steps lastObject] setTitle:@"git push"];
+
+
+//    //
+//    // cap deploy, damit der Server beim Restart das DIR findet
+//    //
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/usr/bin/ssh",
+//      @"localhost",
+//      @"cd",
+//      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+//      @"&&",
+//      [ScriptValue scriptValueWithKey:@"gemsetValue"],
+//      @"exec",
+//      @"bundle",
+//      @"exec",
+//      @"cap",
+//      @"deploy",
+//      nil]];
+//	[[steps lastObject] setTitle:@"cap deploy"];
+//    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+//
+//    //
+//    // cap deploy:apache_setup
+//    //
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/usr/bin/ssh",
+//      @"localhost",
+//      @"cd",
+//      [ScriptValue scriptValueWithKey:kIKUProjectDirectory],
+//      @"&&",
+//      [ScriptValue scriptValueWithKey:@"gemsetValue"],
+//      @"exec",
+//      @"bundle",
+//      @"exec",
+//      @"cap",
+//      @"deploy:apache_setup",
+//      nil]];
+//	[[steps lastObject] setTitle:@"cap deploy:apache_setup"];
+//    [[steps lastObject] setCurrentDirectory:[ScriptValue scriptValueWithKey:kIKUProjectDirectory]];
+
+
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/usr/bin/ssh",
+//      [ScriptValue scriptValueWithKey:@"selected-server"],
+//      @"sudo",
+//      @"/etc/init.d/apache2",
+//      @"restart",
+//      nil]];
+//	[[steps lastObject] setTitle:@"restart apache2"];
+
+    
     /*
-     √ -- im deploy script db password anpassen √
+    √ -- im deploy script db password anpassen √
      √ -- root mysql password abfragen 
      
      √ 1. im user ikusei das projekt-verzeichnis erstellen, falls nciht vorhanden
@@ -931,14 +1037,24 @@ NSArray *ScriptSteps()
     
     
 #warning Cleanup im dev mode
-    [steps addObject:
-     [TaskStep taskStepWithCommandLine:
-      @"/usr/bin/ssh",
-      [ScriptValue scriptValueWithKey:@"selected-server"],
-      @"rm -R",
-      [ScriptValue scriptValueWithKey:kIKUProjectName],
-      nil]];
-    
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/usr/bin/ssh",
+//      [ScriptValue scriptValueWithKey:@"selected-server"],
+//      @"rm -R",
+//      [ScriptValue scriptValueWithKey:@"downcased-projectname"],
+//      nil]];
+//	[[steps lastObject] setTitle:@"Delete project dir on server (GIT)"];
+
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/usr/bin/ssh",
+//      [ScriptValue scriptValueWithKey:@"login-string"],
+//      @"rm -R",
+//      [ScriptValue scriptValueWithKey:@"downcased-projectname"],
+//      nil]];
+//	[[steps lastObject] setTitle:@"Delete project dir on server (USER)"];
+
     //    [steps addObject:
     //     [TaskStep taskStepWithCommandLine:
     //      @"/bin/rm",
@@ -948,14 +1064,14 @@ NSArray *ScriptSteps()
     //    [[steps lastObject] setCurrentDirectory:
     //     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
     
-    [steps addObject:
-     [TaskStep taskStepWithCommandLine:
-      @"/bin/rm",
-      @"-Rf",
-      @"masterfiles",
-      nil]];
-    [[steps lastObject] setCurrentDirectory:
-     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
+//    [steps addObject:
+//     [TaskStep taskStepWithCommandLine:
+//      @"/bin/rm",
+//      @"-Rf",
+//      @"masterfiles",
+//      nil]];
+//    [[steps lastObject] setCurrentDirectory:
+//     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
     
     
     
