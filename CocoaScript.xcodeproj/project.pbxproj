@@ -36,6 +36,7 @@
 		C9CA7B3C12817E8D00C14F2B /* VersionStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C9CA7B3B12817E8D00C14F2B /* VersionStep.m */; };
 		C9CA7B4112817ECC00C14F2B /* PromptStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C9CA7B4012817ECC00C14F2B /* PromptStep.m */; };
 		C9F2551E12823A7000420BE9 /* BlockStep.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F2551D12823A7000420BE9 /* BlockStep.m */; };
+		DD827D2D15357EDE00DB2F6D /* ReadmeStep.m in Sources */ = {isa = PBXBuildFile; fileRef = DD827D2C15357EDE00DB2F6D /* ReadmeStep.m */; };
 		DD98CF09152DDBC8004746BE /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = DD98CF08152DDBC8004746BE /* README.markdown */; };
 /* End PBXBuildFile section */
 
@@ -94,6 +95,8 @@
 		C9CA7B4012817ECC00C14F2B /* PromptStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PromptStep.m; sourceTree = "<group>"; };
 		C9F2551C12823A7000420BE9 /* BlockStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlockStep.h; sourceTree = "<group>"; };
 		C9F2551D12823A7000420BE9 /* BlockStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockStep.m; sourceTree = "<group>"; };
+		DD827D2B15357EDE00DB2F6D /* ReadmeStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadmeStep.h; sourceTree = "<group>"; };
+		DD827D2C15357EDE00DB2F6D /* ReadmeStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadmeStep.m; sourceTree = "<group>"; };
 		DD98CF08152DDBC8004746BE /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -229,6 +232,8 @@
 				C927E05F128271630070E224 /* RegexConditionalStep.m */,
 				A6E7964B1487E5410098C124 /* CollectionSelectStep.h */,
 				A6E7964C1487E5410098C124 /* CollectionSelectStep.m */,
+				DD827D2B15357EDE00DB2F6D /* ReadmeStep.h */,
+				DD827D2C15357EDE00DB2F6D /* ReadmeStep.m */,
 			);
 			name = ScriptSteps;
 			sourceTree = "<group>";
@@ -351,6 +356,7 @@
 				C93B98E8128D1C47009477C1 /* ConcatenateStep.m in Sources */,
 				A64C83EA1486970E00B294A0 /* NSTimer+PSYBlockTimer.m in Sources */,
 				A6E7964D1487E5410098C124 /* CollectionSelectStep.m in Sources */,
+				DD827D2D15357EDE00DB2F6D /* ReadmeStep.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

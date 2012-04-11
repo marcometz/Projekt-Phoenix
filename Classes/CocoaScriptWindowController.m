@@ -242,31 +242,33 @@ NSArray *ScriptSteps();
 //
 - (void)updateTextStorage
 {
-	NSTextStorage *outputTextStorage =
-		[[[stepsController selectedObjects] lastObject] outputStringStorage];
-	if (!outputTextStorage)
+	NSTextStorage *outputTextStorage = [[[stepsController selectedObjects] lastObject] outputStringStorage];
+	
+    if (!outputTextStorage)
 	{
 		outputTextStorage = [[[NSTextStorage alloc] init] autorelease];
 	}
-	NSLayoutManager *outputLayoutManager =
-		[[outputTextView textContainer] layoutManager];
+	
+    NSLayoutManager *outputLayoutManager = [[outputTextView textContainer] layoutManager];
 	NSTextStorage *previousOutputTextStorage = [outputLayoutManager textStorage];
-	if (previousOutputTextStorage != outputTextStorage)
+	
+    if (previousOutputTextStorage != outputTextStorage)
 	{
 		[outputTextView setSelectedRange:NSMakeRange(0, 0)];
 		[[previousOutputTextStorage autorelease] removeLayoutManager:outputLayoutManager];
 		[[outputTextStorage retain] addLayoutManager:outputLayoutManager];
 	}
 
-	NSTextStorage *errorTextStorage =
-		[[[stepsController selectedObjects] lastObject] errorStringStorage];
+	NSTextStorage *errorTextStorage = [[[stepsController selectedObjects] lastObject] errorStringStorage];
+    
 	if (!errorTextStorage)
 	{
 		errorTextStorage = [[[NSTextStorage alloc] init] autorelease];
 	}
-	NSLayoutManager *errorLayoutManager =
-		[[errorTextView textContainer] layoutManager];
+    
+	NSLayoutManager *errorLayoutManager = [[errorTextView textContainer] layoutManager];
 	NSTextStorage *previousErrorTextStorage = [errorLayoutManager textStorage];
+    
 	if (previousErrorTextStorage != errorTextStorage)
 	{
 		[errorTextView setSelectedRange:NSMakeRange(0, 0)];
@@ -296,20 +298,11 @@ NSArray *ScriptSteps();
 	[collectionView setMinItemSize:NSMakeSize(198, 54)];
 	[collectionView setMaxItemSize:NSMakeSize(CGFLOAT_MAX, 54)];
 
-	splitViewDelegate =
-		[[PrioritySplitViewDelegate alloc] init];
-	[splitViewDelegate
-		setPriority:2
-		forViewAtIndex:0];
-	[splitViewDelegate
-		setMinimumLength:200
-		forViewAtIndex:0];
-	[splitViewDelegate
-		setPriority:1
-		forViewAtIndex:1];
-	[splitViewDelegate
-		setMinimumLength:200
-		forViewAtIndex:1];
+	splitViewDelegate = [[PrioritySplitViewDelegate alloc] init];
+	[splitViewDelegate setPriority:2 forViewAtIndex:0];
+	[splitViewDelegate setMinimumLength:200 forViewAtIndex:0];
+	[splitViewDelegate setPriority:1 forViewAtIndex:1];
+	[splitViewDelegate setMinimumLength:200 forViewAtIndex:1];
 	[splitView setDelegate:splitViewDelegate];
 }
 

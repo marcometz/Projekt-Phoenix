@@ -34,9 +34,7 @@
 //
 // returns the initialized step
 //
-+ (PromptStep *)promptStepWithTitle:(NSString *)aTitle
-	initialValue:(id)initial
-	outputStateKey:(NSString *)key
++ (PromptStep *)promptStepWithTitle:(NSString *)aTitle initialValue:(id)initial outputStateKey:(NSString *)key
 {
 	PromptStep *step = [[[self alloc] init] autorelease];
 	step.title = aTitle;
