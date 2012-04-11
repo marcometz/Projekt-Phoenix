@@ -942,6 +942,15 @@ NSArray *ScriptSteps()
 	[[steps lastObject] setTitle:@"git push"];
 
 
+    [steps addObject:
+     [TaskStep taskStepWithCommandLine:
+      @"/bin/rm",
+      @"-Rf",
+      @"masterfiles",
+      nil]];
+    [[steps lastObject] setCurrentDirectory:
+     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
+
     [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"readme-string" andStrings:@"Vorbereitung erfolgreich.\nBitte führe jetzt folgende Schritte im Terminal aus:\n1. cap deploy\n2. cap deploy:db:setup\n3. cap deploy:apache_setup\n4. Es gibt keinen vierten Schritt. Wieviel willst du denn noch selbst machen? :-)\n\n- Wir haben jetzt auf dem Server 'Arion' ein git-repository.\n- Auf dem gewählten Server ein Projektverzeichnis, das den gewählten Projektnamen hat.\n- Lokal ein Projektverzeichnis, das das Git-Repository hat.\n\nDu musst noch die gewählte URL bei planetary-networks registrieren.\n\nhttps://robot.planetary-networks.de/", nil]];
     
     [steps addObject:[ReadmeStep readmeStepWithText:[ScriptValue scriptValueWithKey:@"readme-string"]]];
@@ -975,14 +984,6 @@ NSArray *ScriptSteps()
     //    [[steps lastObject] setCurrentDirectory:
     //     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
     
-//    [steps addObject:
-//     [TaskStep taskStepWithCommandLine:
-//      @"/bin/rm",
-//      @"-Rf",
-//      @"masterfiles",
-//      nil]];
-//    [[steps lastObject] setCurrentDirectory:
-//     [ScriptValue scriptValueWithKey:kIKUProjectPath]];
     
     
 	return steps;
