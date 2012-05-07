@@ -14,9 +14,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8D1107260486CEB800E47090"
-               BuildableName = "CocoaScript.app"
-               BlueprintName = "CocoaScript"
-               ReferencedContainer = "container:CocoaScript.xcodeproj">
+               BuildableName = "Phoenix.app"
+               BlueprintName = "Phoenix"
+               ReferencedContainer = "container:Phoenix.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,9 +32,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8D1107260486CEB800E47090"
-            BuildableName = "CocoaScript.app"
-            BlueprintName = "CocoaScript"
-            ReferencedContainer = "container:CocoaScript.xcodeproj">
+            BuildableName = "Phoenix.app"
+            BlueprintName = "Phoenix"
+            ReferencedContainer = "container:Phoenix.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -44,15 +44,16 @@
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Debug"
+      ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8D1107260486CEB800E47090"
-            BuildableName = "CocoaScript.app"
-            BlueprintName = "CocoaScript"
-            ReferencedContainer = "container:CocoaScript.xcodeproj">
+            BuildableName = "Phoenix.app"
+            BlueprintName = "Phoenix"
+            ReferencedContainer = "container:Phoenix.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -68,9 +69,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8D1107260486CEB800E47090"
-            BuildableName = "CocoaScript.app"
-            BlueprintName = "CocoaScript"
-            ReferencedContainer = "container:CocoaScript.xcodeproj">
+            BuildableName = "Phoenix.app"
+            BlueprintName = "Phoenix"
+            ReferencedContainer = "container:Phoenix.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -14,7 +14,12 @@
 
 #import "ScriptStep.h"
 
-@interface CollectionSelectStep : ScriptStep
+@interface CollectionSelectStep : ScriptStep {
+    NSString *outputStateKey;
+    NSString *inputStateKey;
+    NSArray *collection;
+    NSMutableArray *selection;
+}
 @property (copy) NSString *outputStateKey;
 @property (copy) NSString *inputStateKey;
 @property (retain) NSArray *collection;

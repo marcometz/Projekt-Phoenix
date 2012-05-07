@@ -71,7 +71,7 @@ NSArray *ScriptSteps()
         [step.currentQueue setStateValue:[NSString stringWithString:serverString] forKey:@"servername"];
     }]];
 
-    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"selected-server" andStrings:@"git@", [ScriptValue scriptValueWithKey:@"servername"], nil]];
+    [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"selected-server" andStrings:@"git@", [ScriptValue scriptValueWithKey:@"arion"], nil]];
 	[[steps lastObject] setTitle:@"Set selected Server"];
 
     [steps addObject:[ConcatenateStep concatenateStepWithOutputKey:@"login-string" andStrings:@"ikusei@", [ScriptValue scriptValueWithKey:@"servername"], nil]];
@@ -829,7 +829,7 @@ NSArray *ScriptSteps()
     [steps addObject:[PromptStep promptStepWithTitle:@"Project's URL"
                                         initialValue:@""
                                       outputStateKey:kIKUProjectURL]];
-    [[steps lastObject] setTitle:@"Set a project's URL"];
+    [[steps lastObject] setTitle:@"Set a project's URL (without http://)"];
 
     //
     // Prepare sites-available apache2 config file. push with git to server. enable site. git rm sites-available apache 2 config file from git-repository

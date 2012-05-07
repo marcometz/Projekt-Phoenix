@@ -8,7 +8,10 @@
 
 #import "ScriptStep.h"
 
-@interface ReadmeStep : ScriptStep
+@interface ReadmeStep : ScriptStep {
+    NSTextView *_textView;
+    id _initialValue;
+}
 @property (retain) NSTextView *textView;
 @property (retain) id initialValue;
 

@@ -16,10 +16,10 @@
 #import "ScriptQueue.h"
 
 @implementation CollectionSelectStep
-@synthesize outputStateKey = _outputStateKey;
-@synthesize collection = _collection;
-@synthesize selection = _selection;
-@synthesize inputStateKey = _inputStateKey;
+@synthesize outputStateKey;// = _outputStateKey;
+@synthesize collection;// = _collection;
+@synthesize selection;// = _selection;
+@synthesize inputStateKey;// = _inputStateKey;
 
 + (CollectionSelectStep *)collectionSelectStepWithTitle:(NSString *)aTitle collection:(NSArray *)collection outputStateKey:(NSString *)key;
 {
@@ -42,7 +42,7 @@
 
 - (void)recordSelection:(id)sender
 {
-    [sender state] ? [_selection addObject:[_collection objectAtIndex:[sender tag]]] : [_selection removeObject:[_collection objectAtIndex:[sender tag]]];
+    [sender state] ? [selection addObject:[collection objectAtIndex:[sender tag]]] : [selection removeObject:[collection objectAtIndex:[sender tag]]];
 }
 
 //
@@ -74,7 +74,7 @@
 	[[NSApplication sharedApplication] stopModalWithCode:1];
 	[currentQueue
      setStateValue:self.selection
-     forKey:_outputStateKey];
+     forKey:outputStateKey];
 //	[self replaceOutputString:[self.textField stringValue]];
 }
 
@@ -88,9 +88,9 @@
 //
 - (void)runPanelOnMainThread
 {
-    _collection = [[[NSArray alloc] initWithArray:[currentQueue stateValueForKey:_inputStateKey]] autorelease];
-    _selection = [[[NSMutableArray alloc] init] autorelease];
-    int height = 22 * [_collection count];
+    collection = [[[NSArray alloc] initWithArray:[currentQueue stateValueForKey:inputStateKey]] autorelease];
+    selection = [[[NSMutableArray alloc] init] autorelease];
+    int height = 22 * [collection count];
     NSPanel *panel =
     [[[NSPanel alloc] initWithContentRect:NSMakeRect(0, 0, 300, [[NSNumber numberWithInt:height] floatValue] + 59 + 17 + 10)
                                 styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO]
@@ -105,7 +105,7 @@
 	[titleLabel setBezeled:NO];
 	[[panel contentView] addSubview:titleLabel];
 	
-    [_collection enumerateObjectsUsingBlock:^(NSString *value, NSUInteger idx, BOOL *stop) {
+    [collection enumerateObjectsUsingBlock:^(NSString *value, NSUInteger idx, BOOL *stop) {
         int height_value = 27 * idx;
         NSButton *button = [[[NSButton alloc] initWithFrame:NSMakeRect(20, 40 + [[NSNumber numberWithInt:height_value] floatValue], 200, 22)] autorelease];
         [button setButtonType:NSSwitchButton];
@@ -160,8 +160,8 @@
 //
 - (void)dealloc
 {
-	[_outputStateKey release], _collection = nil;
-    [_collection release], _collection = nil;
+	[outputStateKey release], collection = nil;
+    [collection release], collection = nil;
 	[super dealloc];
 }
 
